@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import com.example.digitalmenu.R
 import kotlinx.coroutines.delay
 val gradientColors = listOf(
-    Color(0xFFCE93D8),
-    Color(0xFF7E57C2)
+    Color(0xFFD1B3FF),
+    Color(0xFF9BB7FF)
 )
 
 class SplashActivity : ComponentActivity() {

@@ -20,8 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -90,16 +89,16 @@ fun RegistrationBody() {
     val coroutineScope = rememberCoroutineScope()
 
     val gradientColors = listOf(
-        Color(0xFFCE93D8),
-        Color(0xFF7E57C2)
+        Color(0xFFD1B3FF),
+        Color(0xFF9BB7FF)
     )
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
     ) { innerPadding ->
-        val scrollState = rememberScrollState()
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -108,256 +107,277 @@ fun RegistrationBody() {
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
 
-            Text(
-                text = "Create Account",
-                style = TextStyle(
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp,
-                    color = Color.White
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                Spacer(modifier = Modifier.height(60.dp))
+            }
+            item {
+                Text(
+                    text = "Create Account",
+                    style = TextStyle(
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 32.sp,
+                        color = Color.White
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            Text(
-                text = "to get started now!",
-                style = TextStyle(
-                    textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
-                    color = Color.White
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
+                Text(
+                    text = "to get started now!",
+                    style = TextStyle(
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(40.dp))
+            }
+            item {
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    placeholder = {
+                        Text("Email Address", color = Color.Black.copy(alpha = 0.7f))
+                    },
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
+                        focusedContainerColor = Color.Black.copy(alpha = 0.3f),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    shape = RoundedCornerShape(15.dp)
+                )
 
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                placeholder = {
-                    Text("Email Address", color = Color.Black.copy(alpha = 0.7f))
-                },
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
-                    focusedContainerColor = Color.Black.copy(alpha = 0.3f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                shape = RoundedCornerShape(15.dp)
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                placeholder = {
-                    Text("Password", color = Color.Black.copy(alpha = 0.7f))
-                },
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                        Icon(
-                            painter = if (passwordVisibility)
-                                painterResource(R.drawable.baseline_visibility_off_24)
-                            else
-                                painterResource(R.drawable.baseline_visibility_24),
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                    }
-                },
-                visualTransformation = if (!passwordVisibility)
-                    PasswordVisualTransformation() else VisualTransformation.None,
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
-                    focusedContainerColor = Color.Black.copy(alpha = 0.3f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                shape = RoundedCornerShape(15.dp)
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
-                placeholder = {
-                    Text("Confirm Password", color = Color.Black.copy(alpha = 0.7f))
-                },
-                trailingIcon = {
-                    IconButton(onClick = { confirmPasswordVisibility = !confirmPasswordVisibility }) {
-                        Icon(
-                            painter = if (confirmPasswordVisibility)
-                                painterResource(R.drawable.baseline_visibility_off_24)
-                            else
-                                painterResource(R.drawable.baseline_visibility_24),
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                    }
-                },
-                visualTransformation = if (!confirmPasswordVisibility)
-                    PasswordVisualTransformation() else VisualTransformation.None,
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
-                    focusedContainerColor = Color.Black.copy(alpha = 0.3f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                shape = RoundedCornerShape(15.dp)
-            )
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Button(
-                onClick = {
-                    if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                        Toast.makeText(context, "Please fill all fields", Toast.LENGTH_LONG).show()
-                    } else if (password != confirmPassword) {
-                        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_LONG).show()
-                    } else {
-                        userViewModel.register(email, password) { success, message, userId ->
-                            if (success) {
-                                val model = UserModel(
-                                    userId = userId,
-                                    email = email,
-                                    firstName = "",
-                                    lastName = "",
+                Spacer(modifier = Modifier.height(15.dp))
+            }
 
 
-                                    gender = ""
-                                )
-                                userViewModel.addUserToDatabase(userId, model) { dbSuccess, dbMessage ->
-                                    Toast.makeText(context, dbMessage, Toast.LENGTH_LONG).show()
+            item {
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    placeholder = {
+                        Text("Password", color = Color.Black.copy(alpha = 0.7f))
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                            Icon(
+                                painter = if (passwordVisibility)
+                                    painterResource(R.drawable.baseline_visibility_off_24)
+                                else
+                                    painterResource(R.drawable.baseline_visibility_24),
+                                contentDescription = null,
+                                tint = Color.Black
+                            )
+                        }
+                    },
+                    visualTransformation = if (!passwordVisibility)
+                        PasswordVisualTransformation() else VisualTransformation.None,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
+                        focusedContainerColor = Color.Black.copy(alpha = 0.3f),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    shape = RoundedCornerShape(15.dp)
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+            }
+
+
+            item {
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    placeholder = {
+                        Text("Confirm Password", color = Color.Black.copy(alpha = 0.7f))
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = { confirmPasswordVisibility = !confirmPasswordVisibility }) {
+                            Icon(
+                                painter = if (confirmPasswordVisibility)
+                                    painterResource(R.drawable.baseline_visibility_off_24)
+                                else
+                                    painterResource(R.drawable.baseline_visibility_24),
+                                contentDescription = null,
+                                tint = Color.Black
+                            )
+                        }
+                    },
+                    visualTransformation = if (!confirmPasswordVisibility)
+                        PasswordVisualTransformation() else VisualTransformation.None,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
+                        focusedContainerColor = Color.Black.copy(alpha = 0.3f),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    shape = RoundedCornerShape(15.dp)
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+            }
+
+
+            item {
+                Button(
+                    onClick = {
+                        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_LONG).show()
+                        } else if (password != confirmPassword) {
+                            Toast.makeText(context, "Passwords do not match", Toast.LENGTH_LONG).show()
+                        } else {
+                            userViewModel.register(email, password) { success, message, userId ->
+                                if (success) {
+                                    val model = UserModel(
+                                        userId = userId,
+                                        email = email,
+                                        firstName = "",
+                                        lastName = "",
+                                        gender = ""
+                                    )
+                                    userViewModel.addUserToDatabase(userId, model) { dbSuccess, dbMessage ->
+                                        Toast.makeText(context, dbMessage, Toast.LENGTH_LONG).show()
+                                    }
+                                } else {
+                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                                 }
-                            } else {
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                             }
                         }
-                    }
-                },
-                shape = RoundedCornerShape(15.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp)
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
-                )
-            ) {
-                Text("Sign Up", color = Color.Black, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    },
+                    shape = RoundedCornerShape(15.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    )
+                ) {
+                    Text("Sign Up", color = Color.Black, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 30.dp, horizontal = 30.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HorizontalDivider(
-                    modifier = Modifier.weight(1f),
-                    color = Color.White.copy(alpha = 0.5f)
-                )
+
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 30.dp, horizontal = 30.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                    Text(
+                        "Or Sign Up with",
+                        modifier = Modifier.padding(horizontal = 15.dp),
+                        fontSize = 12.sp,
+                        color = Color.White
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                }
+            }
+
+
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    horizontalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .weight(1f),
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.gmail),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Google", fontSize = 14.sp)
+                        }
+                    }
+
+                    Card(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .weight(1f),
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.face),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Facebook", fontSize = 14.sp)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            // Login link item
+            item {
                 Text(
-                    "Or Sign Up with",
-                    modifier = Modifier.padding(horizontal = 15.dp),
-                    fontSize = 12.sp,
-                    color = Color.White
-                )
-                HorizontalDivider(
-                    modifier = Modifier.weight(1f),
-                    color = Color.White.copy(alpha = 0.5f)
+                    buildAnnotatedString {
+                        append("Already have an account? ")
+                        withStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.Bold)) {
+                            append("Login Now")
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val intent = Intent(context, LoginActivity::class.java)
+                            context.startActivity(intent)
+                            activity?.finish()
+                        }
+                        .padding(vertical = 20.dp),
+                    textAlign = TextAlign.Center,
+                    color = Color.White.copy(alpha = 0.8f)
                 )
             }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                horizontalArrangement = Arrangement.spacedBy(15.dp)
-            ) {
-                Card(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .weight(1f),
-                    shape = RoundedCornerShape(15.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.gmail),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Google", fontSize = 14.sp)
-                    }
-                }
-
-                Card(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .weight(1f),
-                    shape = RoundedCornerShape(15.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.face),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Facebook", fontSize = 14.sp)
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                buildAnnotatedString {
-                    append("Already have an account? ")
-                    withStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.Bold)) {
-                        append("Login Now")
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        val intent = Intent(context, LoginActivity::class.java)
-                        context.startActivity(intent)
-                        activity?.finish()
-                    }
-                    .padding(vertical = 20.dp),
-                textAlign = TextAlign.Center,
-                color = Color.White.copy(alpha = 0.8f)
-            )
         }
     }
 }

@@ -84,89 +84,91 @@ fun WelcomeBody(
                 .padding(24.dp)
         ) {
 
-            Spacer(modifier = Modifier.height(40.dp))
-            Image(
-                painter = painterResource(id = R.drawable.menulogo),
-                contentDescription = " Digital Menu",
-                modifier = Modifier
-                    .size(140.dp)
-                    .clip(CircleShape)
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-            Text(
-                text = "Digital Menu",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-
-            Button(
-                onClick =  {
-                val intent = Intent(context, LoginActivity::class.java)
-                context.startActivity(intent)
-                activity?.finish()
-            },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
+                Spacer(modifier = Modifier.height(40.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.menulogo),
+                    contentDescription = " Digital Menu",
+                    modifier = Modifier
+                        .size(140.dp)
+                        .clip(CircleShape)
                 )
-            ) {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+
                 Text(
-                    text = "Login",
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    text = "Digital Menu",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+
+                Button(
+                    onClick = {
+                        val intent = Intent(context, LoginActivity::class.java)
+                        context.startActivity(intent)
+                        activity?.finish()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Login",
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+
+                Button(
+                    onClick = {
+                        val intent = Intent(context, RegistrationActivity::class.java)
+                        context.startActivity(intent)
+                        activity?.finish()
+                    },
+
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    border = BorderStroke(1.dp, Color.White),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Sign Up",
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Text(
+                    text = "Continue as a guest",
+                    color = Color.White.copy(alpha = 0.9f),
+                    fontSize = 14.sp,
+                    modifier = Modifier.clickable { onGuestClick() }
                 )
             }
-
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-
-            Button(
-                onClick =  {
-                    val intent = Intent(context, RegistrationActivity::class.java)
-                    context.startActivity(intent)
-                    activity?.finish()
-                },
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                border = BorderStroke(1.dp, Color.White),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Sign Up",
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Text(
-                text = "Continue as a guest",
-                color = Color.White.copy(alpha = 0.9f),
-                fontSize = 14.sp,
-                modifier = Modifier.clickable { onGuestClick() }
-            )
         }
     }
-}
+
 
 
 

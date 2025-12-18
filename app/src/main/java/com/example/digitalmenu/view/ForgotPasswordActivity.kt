@@ -57,8 +57,8 @@ fun ForgotPasswordBody() {
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     val gradientColors = listOf(
-        Color(0xFFCE93D8),
-        Color(0xFF7E57C2)
+        Color(0xFFD1B3FF),
+        Color(0xFF9BB7FF)
     )
     Scaffold() { padding ->
         LazyColumn(
@@ -91,12 +91,12 @@ fun ForgotPasswordBody() {
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 15.dp),
-                    shape = RoundedCornerShape(15.dp)
+                        .padding(horizontal = 20.dp),
+                    shape = RoundedCornerShape(20.dp)
 
 
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     onClick = {
                         userViewModel.forgotPassword(email){ success, message->

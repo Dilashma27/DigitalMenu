@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -106,242 +107,260 @@ fun LoginBody() {
     val editor = sharedPreferences.edit()
 
     val gradientColors = listOf(
-        Color(0xFFCE93D8),
-        Color(0xFF7E57C2)
+        Color(0xFFD1B3FF),
+        Color(0xFF9BB7FF)
     )
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
         val scrollState = rememberScrollState()
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues = padding)
-                .background(brush = Brush.verticalGradient(
-                    colors = gradientColors
-                )),
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = gradientColors
+                    )
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
-
-            // Logo with rounded corners
-            Image(
-                painter = painterResource(id = R.drawable.menulogo),
-
-                contentDescription = "Logo",
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(20.dp))
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-            Text("Digital Menu", fontSize = 36.sp, color = Color.Black, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("Welcome, Glad to see you", fontSize = 14.sp, color = Color.Gray)
-            Spacer(modifier = Modifier.height(40.dp))
-
-            if (showDialog) {
-                AlertDialog(
-                    onDismissRequest = {
-                        showDialog = false
-                    },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            showDialog = false
-                        }) {
-                            Text("Ok")
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = {
-                            showDialog = false
-                        }) {
-                            Text("Cancel")
-                        }
-                    },
-                    title = {
-                        Text("Confirm")
-                    },
-                    text = {
-                        Text("Are you sure you want to delete")
-                    },
-                    properties = DialogProperties(
-                        dismissOnBackPress = true,
-                        dismissOnClickOutside = true
-                    )
-                )
+            item {
+                Spacer(modifier = Modifier.height(60.dp))
             }
 
-            OutlinedTextField(
-                value = email,
-                onValueChange = { data ->
-                    email = data
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email
-                ),
-                placeholder = {
-                    Text("Email Address")
-                },
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = PurpleGrey80,
-                    focusedContainerColor = PurpleGrey40,
-                    focusedIndicatorColor = Blue,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                shape = RoundedCornerShape(15.dp)
-            )
-            Spacer(modifier = Modifier.height(15.dp))
+            item {
+                Image(
+                    painter = painterResource(id = R.drawable.menulogo),
 
-            OutlinedTextField(
-                value = password,
-                onValueChange = { data ->
-                    password = data
-                },
-                placeholder = {
-                    Text("Password")
-                },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        visibility = !visibility
-                    }) {
-                        Icon(
-                            painter = if (visibility)
-                                painterResource(R.drawable.baseline_visibility_off_24)
-                            else
-                                painterResource(R.drawable.baseline_visibility_24),
-                            contentDescription = null
+                    contentDescription = "Logo",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                )
+            }
+            item {
+
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    "Digital Menu",
+                    fontSize = 36.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Welcome, Glad to see you", fontSize = 14.sp, color = Color.Gray)
+                Spacer(modifier = Modifier.height(40.dp))
+
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showDialog = false
+                        },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                showDialog = false
+                            }) {
+                                Text("Ok")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = {
+                                showDialog = false
+                            }) {
+                                Text("Cancel")
+                            }
+                        },
+                        title = {
+                            Text("Confirm")
+                        },
+                        text = {
+                            Text("Are you sure you want to delete")
+                        },
+                        properties = DialogProperties(
+                            dismissOnBackPress = true,
+                            dismissOnClickOutside = true
                         )
-                    }
-                },
-                visualTransformation = if (!visibility) PasswordVisualTransformation() else VisualTransformation.None,
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = PurpleGrey80,
-                    focusedContainerColor = PurpleGrey80,
-                    focusedIndicatorColor = Blue,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                shape = RoundedCornerShape(15.dp)
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = rememberMe,
-                        onCheckedChange = { rememberMe = it }
                     )
-                    Text("Remember Me", fontSize = 12.sp)
                 }
 
-                Text(
-                    "Forgot Password?",
-                    modifier = Modifier.clickable {
-                        val intent = Intent(context, ForgotPassword::class.java)
-                        context.startActivity(intent)
-                        activity?.finish()
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { data ->
+                        email = data
                     },
-                    style = TextStyle(
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
+                    ),
+                    placeholder = {
+                        Text("Email Address")
+                    },
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = PurpleGrey80,
+                        focusedContainerColor = PurpleGrey40,
+                        focusedIndicatorColor = Blue,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    shape = RoundedCornerShape(15.dp)
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { data ->
+                        password = data
+                    },
+                    placeholder = {
+                        Text("Password")
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            visibility = !visibility
+                        }) {
+                            Icon(
+                                painter = if (visibility)
+                                    painterResource(R.drawable.baseline_visibility_off_24)
+                                else
+                                    painterResource(R.drawable.baseline_visibility_24),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    visualTransformation = if (!visibility) PasswordVisualTransformation() else VisualTransformation.None,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = PurpleGrey80,
+                        focusedContainerColor = PurpleGrey80,
+                        focusedIndicatorColor = Blue,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    shape = RoundedCornerShape(15.dp)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = rememberMe,
+                            onCheckedChange = { rememberMe = it }
+                        )
+                        Text("Remember Me", fontSize = 12.sp)
+                    }
+
+                    Text(
+                        "Forgot Password?",
+                        modifier = Modifier.clickable {
+                            val intent = Intent(context, ForgotPassword::class.java)
+                            context.startActivity(intent)
+                            activity?.finish()
+                        },
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = Color.Black
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Button(
+                    onClick = {
+                        if (localEmail == email && localPassword == password) {
+                            val intent = Intent(context, DashboardActivity::class.java)
+                            context.startActivity(intent)
+                            activity?.finish()
+                        } else {
+                            Toast.makeText(context, "Invalid login", Toast.LENGTH_LONG).show()
+                        }
+                        if (rememberMe) {
+                            editor.putString("email", email)
+                            editor.putString("password", password)
+                            editor.apply()
+                        }
+                    },
+                    shape = RoundedCornerShape(15.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp)
+                        .height(50.dp)
+                ) {
+                    Text("Login", fontSize = 16.sp)
+                }
+
+                // OR Divider
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 30.dp, horizontal = 30.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                    Text(
+                        "Or Login with",
+                        modifier = Modifier.padding(horizontal = 15.dp),
                         fontSize = 12.sp,
                         color = Color.Black
                     )
-                )
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                }
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Button(
-                onClick = {
-                    if (localEmail == email && localPassword == password) {
-                        val intent = Intent(context, DashboardActivity::class.java)
-                        context.startActivity(intent)
-                        activity?.finish()
-                    } else {
-                        Toast.makeText(context, "Invalid login", Toast.LENGTH_LONG).show()
-                    }
-                    if (rememberMe) {
-                        editor.putString("email", email)
-                        editor.putString("password", password)
-                        editor.apply()
-                    }
-                },
-                shape = RoundedCornerShape(15.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp)
-                    .height(50.dp)
-            ) {
-                Text("Login", fontSize = 16.sp)
-            }
-
-            // OR Divider
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 30.dp, horizontal = 30.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f))
-                Text("Or Login with", modifier = Modifier.padding(horizontal = 15.dp), fontSize = 12.sp, color = Color.Black)
-                HorizontalDivider(modifier = Modifier.weight(1f))
-            }
-
-            // Social Media Buttons
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                horizontalArrangement = Arrangement.spacedBy(15.dp)
-            ) {
-                SocialMediaCard(
+            item {
+                Row(
                     modifier = Modifier
-                        .height(50.dp)
-                        .weight(1f),
-                    image = R.drawable.gmail,
-                    label = "Google"
-                )
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    horizontalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    SocialMediaCard(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .weight(1f),
+                        image = R.drawable.gmail,
+                        label = "Google"
+                    )
 
-                SocialMediaCard(
+                    SocialMediaCard(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .weight(1f),
+                        image = R.drawable.face,
+                        label = "Facebook"
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    buildAnnotatedString {
+                        append("Don't have an account? ")
+                        withStyle(SpanStyle(color = Blue, fontWeight = FontWeight.Bold)) {
+                            append("Sign Up Now")
+                        }
+                    },
                     modifier = Modifier
-                        .height(50.dp)
-                        .weight(1f),
-                    image = R.drawable.face,
-                    label = "Facebook"
+                        .clickable {
+                            val intent = Intent(context, RegistrationActivity::class.java)
+                            context.startActivity(intent)
+                            activity?.finish()
+                        }
+                        .padding(vertical = 20.dp),
+                    textAlign = TextAlign.Center
                 )
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                buildAnnotatedString {
-                    append("Don't have an account? ")
-                    withStyle(SpanStyle(color = Blue, fontWeight = FontWeight.Bold)) {
-                        append("Sign Up Now")
-                    }
-                },
-                modifier = Modifier
-                    .clickable {
-                        val intent = Intent(context, RegistrationActivity::class.java)
-                        context.startActivity(intent)
-                        activity?.finish()
-                    }
-                    .padding(vertical = 20.dp),
-                textAlign = TextAlign.Center
-            )
         }
     }
 }
