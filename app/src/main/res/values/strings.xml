@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Digital menu</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="title_activity_notification_screen">NotificationScreen</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_more_screen">MoreScreen</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+</resources>

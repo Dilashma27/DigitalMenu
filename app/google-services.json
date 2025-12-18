@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "998364016042",
+    "firebase_url": "https://digital-menu-d2bf6-default-rtdb.firebaseio.com",
+    "project_id": "digital-menu-d2bf6",
+    "storage_bucket": "digital-menu-d2bf6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998364016042:android:2d55a45d06086fa5594fd3",
+        "android_client_info": {
+          "package_name": "com.example.digitalmenu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhLVkTTWHhxSpWsxyPqZnHhete1Y570T0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
