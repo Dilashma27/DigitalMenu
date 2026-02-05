@@ -1,4 +1,4 @@
-package com.example.digitalmenu
+package com.example.digitalmenu.ui.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,8 @@ import androidx.compose.ui.text.TextStyle
 @Composable
 fun ProfileScreen(){
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(Color.Magenta)
     ) {
         Text("ProfileScreen", style = TextStyle(Color.Black))

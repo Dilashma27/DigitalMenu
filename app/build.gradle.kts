@@ -7,9 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.digitalmenu"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.digitalmenu"
@@ -40,9 +38,12 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
 dependencies {
+    implementation("com.cloudinary:cloudinary-android:2.1.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.0.4") // coil convert url to image
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -52,6 +53,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.firebase.auth)
+    implementation("androidx.compose.runtime:runtime-livedata:1.10.0")
     implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

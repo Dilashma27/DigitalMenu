@@ -28,7 +28,11 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.digitalmenu.ViewModel.HomeScreen
+import com.example.digitalmenu.ui.home.HomeScreen
+import com.example.digitalmenu.ui.order.OrderScreen
+import com.example.digitalmenu.ui.favorites.FavoritesScreen
+import com.example.digitalmenu.ui.profile.ProfileScreen
+
 
 class DashboardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,19 +40,18 @@ class DashboardActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DashboardBody()
-
         }
     }
 }
-@OptIn(ExperimentalStdlibApi::class, ExperimentalMaterial3Api::class)
+data class NavItem(val label: String, val icon: Int)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardBody(){
     val context = LocalContext.current
-    val activity = context as Activity
+    val activity = if (context is Activity) context else null
 
-    val email = activity.intent.getStringExtra("email")
-    val password = activity.intent. getStringExtra("password")
-    data class NavItem(val label: String, val icon: Int)
+    val email = activity?.intent?.getStringExtra("email")?: ""
+    val password = activity?.intent?.getStringExtra("password")?: ""
 
     var selectedIndex by remember { mutableStateOf(0) }
 
@@ -84,7 +87,7 @@ fun DashboardBody(){
                     Text("Dashboard") },
                 navigationIcon = {
                     IconButton (onClick = {
-                        activity.finish()
+                        activity?.finish()
                     }) {
                         Icon(
                             painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),

@@ -1,4 +1,4 @@
-package com.example.digitalmenu
+package com.example.digitalmenu.ui.favorites
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,8 @@ import androidx.compose.ui.text.TextStyle
 @Composable
 fun FavoritesScreen(){
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(Color.Cyan)
     ) {
         Text("FavoritesScreen", style = TextStyle(Color.Black))

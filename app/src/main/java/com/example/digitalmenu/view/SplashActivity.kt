@@ -31,7 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.digitalmenu.R
-import com.example.digitalmenu.ViewModel.gradientColors
+
 import kotlinx.coroutines.delay
 
 val gradientColors = listOf(

@@ -1,4 +1,4 @@
-package com.example.digitalmenu.ViewModel
+package com.example.digitalmenu.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -57,10 +57,7 @@ fun HomeScreen() {
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(gradientColors)
-                ),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 

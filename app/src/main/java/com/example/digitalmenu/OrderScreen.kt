@@ -1,4 +1,4 @@
-package com.example.digitalmenu
+package com.example.digitalmenu.ui.order
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,8 @@ import androidx.compose.ui.text.TextStyle
 @Composable
 fun OrderScreen(){
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(Color.DarkGray)
     ) {
         Text("OrderScreen", style= TextStyle(Color.Black))
