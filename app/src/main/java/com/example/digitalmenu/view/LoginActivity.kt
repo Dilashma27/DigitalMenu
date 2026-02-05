@@ -70,6 +70,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import com.example.digitalmenu.DashboardActivity
 import com.example.digitalmenu.R
+import com.example.digitalmenu.ViewModel.UserViewModel
+import com.example.digitalmenu.repository.UserRepoImpl
 import com.example.digitalmenu.ui.theme.PurpleGrey40
 import com.example.digitalmenu.ui.theme.PurpleGrey80
 import kotlinx.coroutines.launch
@@ -93,6 +95,7 @@ fun LoginBody() {
 
     val Blue = Color(0xFF2196F3)
 
+    val userViewModel = remember { UserViewModel(repo = UserRepoImpl()) }
     val context = LocalContext.current
     val activity = context as? Activity
 
@@ -197,8 +200,8 @@ fun LoginBody() {
                         Text("Email Address")
                     },
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = PurpleGrey80,
-                        focusedContainerColor = PurpleGrey40,
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White,
                         focusedIndicatorColor = Blue,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
@@ -232,8 +235,8 @@ fun LoginBody() {
                     },
                     visualTransformation = if (!visibility) PasswordVisualTransformation() else VisualTransformation.None,
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = PurpleGrey80,
-                        focusedContainerColor = PurpleGrey80,
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White,
                         focusedIndicatorColor = Blue,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
@@ -278,18 +281,18 @@ fun LoginBody() {
 
                 Button(
                     onClick = {
-                        if (localEmail == email && localPassword == password) {
-                            val intent = Intent(context, DashboardActivity::class.java)
-                            context.startActivity(intent)
-                            activity?.finish()
-                        } else {
-                            Toast.makeText(context, "Invalid login", Toast.LENGTH_LONG).show()
-                        }
-                        if (rememberMe) {
-                            editor.putString("email", email)
-                            editor.putString("password", password)
-                            editor.apply()
-                        }
+                     userViewModel.login(email, password){
+                         success,message->
+                         if(success){
+                             val intent = Intent(context, DashboardActivity::class.java)
+                             context.startActivity(intent)
+                         }else{
+                            Toast.makeText(context,
+                                message ,
+                                Toast.LENGTH_LONG
+                            ).show()
+                         }
+                     }
                     },
                     shape = RoundedCornerShape(15.dp),
                     modifier = Modifier
@@ -355,7 +358,7 @@ fun LoginBody() {
                         .clickable {
                             val intent = Intent(context, RegistrationActivity::class.java)
                             context.startActivity(intent)
-                            activity?.finish()
+
                         }
                         .padding(vertical = 20.dp),
                     textAlign = TextAlign.Center

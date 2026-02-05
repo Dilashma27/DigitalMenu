@@ -13,6 +13,7 @@ class UserViewModel(val  repo: UserRepo): ViewModel(){
         repo.register(email, password, callback)
     }
     fun forgotPassword(email: String, callback: (Boolean, String) -> Unit){
+        repo.forgotPassword(email, callback)
     }
     fun addUserToDatabase(
         userId: String,

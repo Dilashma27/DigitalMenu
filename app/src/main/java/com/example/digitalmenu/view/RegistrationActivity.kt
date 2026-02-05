@@ -144,8 +144,8 @@ fun RegistrationBody() {
                         Text("Email Address", color = Color.Black.copy(alpha = 0.7f))
                     },
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
-                        focusedContainerColor = Color.Black.copy(alpha = 0.3f),
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         focusedTextColor = Color.Black,
@@ -183,8 +183,8 @@ fun RegistrationBody() {
                     visualTransformation = if (!passwordVisibility)
                         PasswordVisualTransformation() else VisualTransformation.None,
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
-                        focusedContainerColor = Color.Black.copy(alpha = 0.3f),
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         focusedTextColor = Color.Black,
@@ -222,8 +222,8 @@ fun RegistrationBody() {
                     visualTransformation = if (!confirmPasswordVisibility)
                         PasswordVisualTransformation() else VisualTransformation.None,
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Black.copy(alpha = 0.2f),
-                        focusedContainerColor = Color.Black.copy(alpha = 0.3f),
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         focusedTextColor = Color.Black,
@@ -258,6 +258,10 @@ fun RegistrationBody() {
                                     )
                                     userViewModel.addUserToDatabase(userId, model) { dbSuccess, dbMessage ->
                                         Toast.makeText(context, dbMessage, Toast.LENGTH_LONG).show()
+
+                                        val intent = Intent(context, LoginActivity::class.java)
+                                        context.startActivity(intent)
+                                        activity?.finish()
                                     }
                                 } else {
                                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
