@@ -2,7 +2,6 @@ package com.example.digitalmenu
 
 import android.app.Activity
 import android.os.Bundle
-import android.net.wifi.hotspot2.pps.HomeSp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,7 +28,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.digitalmenu.ui.theme.DigitalMenuTheme
+import com.example.digitalmenu.ViewModel.HomeScreen
 
 class DashboardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,17 +58,17 @@ fun DashboardBody(){
             icon = R.drawable.baseline_home_24,
         ),
         NavItem(
-            "Search",
-            icon = R.drawable.baseline_search_24,
+            "Order",
+            icon = R.drawable.baseline_restaurant_menu_24,
         ),
         NavItem(
-            "Notification",
-            icon = R.drawable.baseline_notifications_24,
+            "Favorites",
+            icon = R.drawable.baseline_favorite_border_24,
         ),
 
         NavItem(
-            "More",
-            icon = R.drawable.baseline_more_horiz_24,
+            "Profile",
+            icon = R.drawable.baseline_person_24,
         ),
     )
     Scaffold(
@@ -143,9 +142,9 @@ fun DashboardBody(){
         ) {
             when(selectedIndex){
                 0-> HomeScreen()
-                1-> SearchScreen()
-                2-> NotificationScreen()
-                3-> MoreScreen()
+                1-> OrderScreen()
+                2-> FavoritesScreen()
+                3-> ProfileScreen()
                 else -> HomeScreen()
             }
         }

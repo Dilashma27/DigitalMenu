@@ -223,9 +223,9 @@ fun LoginBody() {
                         }) {
                             Icon(
                                 painter = if (visibility)
-                                    painterResource(R.drawable.baseline_visibility_off_24)
+                                    painterResource(R.drawable.baseline_visibility_24)
                                 else
-                                    painterResource(R.drawable.baseline_visibility_24),
+                                    painterResource(R.drawable.baseline_visibility_off_24),
                                 contentDescription = null
                             )
                         }

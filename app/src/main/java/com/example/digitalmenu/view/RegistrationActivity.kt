@@ -172,9 +172,9 @@ fun RegistrationBody() {
                         IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                             Icon(
                                 painter = if (passwordVisibility)
-                                    painterResource(R.drawable.baseline_visibility_off_24)
+                                    painterResource(R.drawable.baseline_visibility_24)
                                 else
-                                    painterResource(R.drawable.baseline_visibility_24),
+                                    painterResource(R.drawable.baseline_visibility_off_24),
                                 contentDescription = null,
                                 tint = Color.Black
                             )
@@ -211,9 +211,9 @@ fun RegistrationBody() {
                         IconButton(onClick = { confirmPasswordVisibility = !confirmPasswordVisibility }) {
                             Icon(
                                 painter = if (confirmPasswordVisibility)
-                                    painterResource(R.drawable.baseline_visibility_off_24)
+                                    painterResource(R.drawable.baseline_visibility_24)
                                 else
-                                    painterResource(R.drawable.baseline_visibility_24),
+                                    painterResource(R.drawable.baseline_visibility_off_24),
                                 contentDescription = null,
                                 tint = Color.Black
                             )
