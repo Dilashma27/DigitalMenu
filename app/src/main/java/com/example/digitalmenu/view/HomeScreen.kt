@@ -76,10 +76,28 @@ fun HomeScreen() {
                 CategorySection()
             }
 
-            items(5) {
+            items(1) {
                 MenuItemCard(
                     name = "Margherita Pizza",
                     price = "Rs. 299"
+                )
+            }
+            items(1) {
+                MenuItemCard(
+                    name = "Burger",
+                    price = "Rs. 250"
+                )
+            }
+            items(1) {
+                MenuItemCard(
+                    name = "Mo:Mo",
+                    price = "Rs. 150"
+                )
+            }
+            items(1) {
+                MenuItemCard(
+                    name = "Chocolava",
+                    price = "Rs. 100"
                 )
             }
         }
@@ -126,7 +144,7 @@ fun SearchBar() {
 
 @Composable
 fun CategorySection() {
-    val categories = listOf("Pizza", "Burger", "Drinks", "Dessert", "Coffee")
+    val categories = listOf("Snacks", "Drinks", "Dessert")
 
     LazyRow(
         modifier = Modifier.padding(start = 16.dp),
