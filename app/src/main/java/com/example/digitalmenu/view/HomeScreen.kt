@@ -1,5 +1,6 @@
 package com.example.digitalmenu.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -40,6 +42,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.digitalmenu.R
+import com.example.digitalmenu.model.ProductModel
 
 
 val gradientColors = listOf(
@@ -47,7 +54,45 @@ val gradientColors = listOf(
     Color(0xFF9BB7FF)
 )
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    favoriteItems: List<ProductModel> = emptyList(),
+    onFavoriteToggle: (ProductModel) -> Unit = {}
+) {
+    // Define menu items using ProductModel
+    val menuItems = listOf(
+        ProductModel(
+            productId = "1",
+            name = "Margherita Pizza",
+            description = "Classic Italian pizza",
+            price = 299.0,
+            categoryId = "snacks",
+            image = ""  // Using drawable instead
+        ),
+        ProductModel(
+            productId = "2",
+            name = "Burger",
+            description = "Delicious burger",
+            price = 250.0,
+            categoryId = "snacks",
+            image = ""
+        ),
+        ProductModel(
+            productId = "3",
+            name = "Mo:Mo",
+            description = "Steamed dumplings",
+            price = 150.0,
+            categoryId = "snacks",
+            image = ""
+        ),
+        ProductModel(
+            productId = "4",
+            name = "Chocolava",
+            description = "Chocolate lava cake",
+            price = 100.0,
+            categoryId = "dessert",
+            image = ""
+        )
+    )
     Column(
         modifier = Modifier.fillMaxSize()
             .background(
@@ -73,32 +118,24 @@ fun HomeScreen() {
                 CategorySection()
             }
 
-            items(1) {
+
+            items(menuItems) { item ->
+                val drawableRes = when (item.productId) {
+                    "1" -> R.drawable.pizza
+                    "2" -> R.drawable.burger
+                    "3" -> R.drawable.momo
+                    "4" -> R.drawable.chocolava
+                    else -> R.drawable.pizza
+                }
+
                 MenuItemCard(
-                    name = "Margherita Pizza",
-                    price = "Rs. 299"
-                )
-            }
-            items(1) {
-                MenuItemCard(
-                    name = "Burger",
-                    price = "Rs. 250"
-                )
-            }
-            items(1) {
-                MenuItemCard(
-                    name = "Mo:Mo",
-                    price = "Rs. 150"
-                )
-            }
-            items(1) {
-                MenuItemCard(
-                    name = "Chocolava",
-                    price = "Rs. 100"
+                    product = item,
+                    imageRes = drawableRes,
+                    isFavorite = favoriteItems.any { it.productId == item.productId },
+                    onFavoriteClick = { onFavoriteToggle(item) }
                 )
             }
         }
-
     }
 }
 
@@ -171,8 +208,10 @@ fun CategoryChip(text: String) {
 
 @Composable
 fun MenuItemCard(
-    name: String,
-    price: String
+    product: ProductModel,
+    imageRes: Int,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -187,29 +226,30 @@ fun MenuItemCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-            // Fake image placeholder
-            Box(
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = product.name,
                 modifier = Modifier
                     .size(64.dp)
-                    .background(Color(0xFFEAEAEA), RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(name, fontWeight = FontWeight.Bold)
+                Text(product.name, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(price, color = Color.Gray)
+                Text("Rs. ${product.price.toInt()}", color = Color.Black)
             }
 
-            IconButton(onClick = { }) {
+            IconButton(onClick = onFavoriteClick) {
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
-                    contentDescription = null
+                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = if (isFavorite) Color.Red else Color.Gray
                 )
             }
         }
     }
 }
-

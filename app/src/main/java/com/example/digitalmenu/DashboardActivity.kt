@@ -2,6 +2,7 @@ package com.example.digitalmenu
 
 import android.app.Activity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.digitalmenu.model.ProductModel
 import com.example.digitalmenu.ui.home.HomeScreen
 import com.example.digitalmenu.ui.order.OrderScreen
 import com.example.digitalmenu.ui.favorites.FavoritesScreen
@@ -54,6 +56,7 @@ fun DashboardBody(){
     val password = activity?.intent?.getStringExtra("password")?: ""
 
     var selectedIndex by remember { mutableStateOf(0) }
+    val favoriteItems = remember { mutableStateOf<List<ProductModel>>(emptyList()) }
 
     var listNav = listOf(
         NavItem(
@@ -144,11 +147,42 @@ fun DashboardBody(){
                 .padding(padding)
         ) {
             when(selectedIndex){
-                0-> HomeScreen()
+                0-> HomeScreen( favoriteItems = favoriteItems.value,
+                    onFavoriteToggle = { item ->
+                        val isFavorite = favoriteItems.value.any { it.productId == item.productId }
+
+                        if (isFavorite) {
+                            // Remove from favorites
+                            favoriteItems.value = favoriteItems.value.filter { it.productId != item.productId }
+                            Toast.makeText(context, "Item removed from favorites", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // Add to favorites
+                            favoriteItems.value = favoriteItems.value + item
+                            Toast.makeText(context, "Item added to favorites", Toast.LENGTH_SHORT).show()
+                        }
+                    })
                 1-> OrderScreen()
-                2-> FavoritesScreen()
+                2-> FavoritesScreen(
+                    favoriteItems = favoriteItems.value,
+                    onRemoveFavorite = { item ->
+                        favoriteItems.value = favoriteItems.value.filter { it.productId != item.productId }
+                        Toast.makeText(context, "Item removed from favorites", Toast.LENGTH_SHORT).show()
+                    }
+                )
                 3-> ProfileScreen()
-                else -> HomeScreen()
+                else -> HomeScreen( favoriteItems = favoriteItems.value,
+                    onFavoriteToggle = { item ->
+                        val isFavorite = favoriteItems.value.any { it.productId == item.productId }
+
+                        if (isFavorite) {
+                            favoriteItems.value = favoriteItems.value.filter { it.productId != item.productId }
+                            Toast.makeText(context, "Item removed from favorites", Toast.LENGTH_SHORT).show()
+                        } else {
+                            favoriteItems.value = favoriteItems.value + item
+                            Toast.makeText(context, "Item added to favorites", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                )
             }
         }
     }
