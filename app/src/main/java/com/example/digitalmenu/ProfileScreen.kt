@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -31,18 +32,19 @@ fun ProfileScreen(
     onEditProfile: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
+    val gradientColors = listOf(Color(0xFFD1B3FF), Color(0xFF9BB7FF))
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FB))
+            .background(Brush.verticalGradient(gradientColors))
     ) {
 
-        // ---------- HEADER ----------
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(220.dp)
-                .background(Color(0xFF2196F3)),
+                .background(Color(0xFFCBB3F8)),
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -77,7 +79,6 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // ---------- INFO CARD ----------
         Card(
             modifier = Modifier
                 .fillMaxWidth()

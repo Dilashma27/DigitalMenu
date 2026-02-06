@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImage
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,9 +39,10 @@ import androidx.compose.ui.unit.sp
 import com.example.digitalmenu.R
 import com.example.digitalmenu.model.ProductModel
 
-val favGradientColors = listOf(
-    Color(0xFFFFB3D9),
-    Color(0xFFB3D9FF)
+
+val gradientColors = listOf(
+    Color(0xFFD1B3FF),
+    Color(0xFF9BB7FF)
 )
 
 @Composable
@@ -52,7 +54,7 @@ fun FavoritesScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient(colors = favGradientColors)
+                brush = Brush.verticalGradient(colors = gradientColors)
             )
     ) {
         if (favoriteItems.isEmpty()) {
@@ -86,7 +88,6 @@ fun FavoritesScreen(
                 items(favoriteItems) { item ->
                     FavoriteItemCard(
                         product = item,
-                        imageRes = item.getImageResource(),
                         onRemoveClick = { onRemoveFavorite(item) }
                     )
                 }
@@ -98,7 +99,6 @@ fun FavoritesScreen(
 @Composable
 fun FavoriteItemCard(
     product: ProductModel,
-    imageRes: Int,
     onRemoveClick: () -> Unit
 ) {
     Card(
@@ -115,14 +115,26 @@ fun FavoriteItemCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = product.name,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
+            val imageUrl = product.image
+            if (!imageUrl.isNullOrEmpty()) {
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = product.name,
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.pizza),
+                    contentDescription = product.name,
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             Spacer(modifier = Modifier.width(12.dp))
 

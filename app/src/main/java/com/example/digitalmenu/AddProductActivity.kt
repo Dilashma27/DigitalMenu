@@ -2,7 +2,6 @@ package com.example.digitalmenu
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,54 +10,39 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-
 import com.example.digitalmenu.ViewModel.ProductViewModel
 import com.example.digitalmenu.model.ProductModel
 import com.example.digitalmenu.repository.ProductRepoImpl
 import com.example.digitalmenu.ui.theme.ImageUtils
-
-
-
 import java.util.UUID
 
 class AddProductActivity : ComponentActivity() {
-    lateinit var imageUtils: ImageUtils
-    var selectedImageUri by mutableStateOf<Uri?>(null)
-
+    private lateinit var imageUtils: ImageUtils
+    private var selectedImageUri by mutableStateOf<Uri?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
         imageUtils = ImageUtils(this, this)
+        imageUtils.registerLaunchers { uri ->
+            selectedImageUri = uri
+        }
+
         val productId = intent.getStringExtra("productId")
         val initialProduct = if (productId != null) {
             ProductModel(
@@ -92,26 +76,23 @@ fun ProductScreen(
 ) {
     val context = LocalContext.current
 
-
-
     var name by remember { mutableStateOf(initialProduct?.name ?: "") }
     var description by remember { mutableStateOf(initialProduct?.description ?: "") }
     var price by remember { mutableStateOf(initialProduct?.price?.toString() ?: "") }
+    var selectedCategory by remember { mutableStateOf(initialProduct?.categoryId ?: "Snacks") }
 
+    val categories = listOf("Snacks", "Drinks", "Dessert")
+    val gradientColors = listOf(Color(0xFFD1B3FF), Color(0xFF9BB7FF))
 
-
-    Scaffold(
-        topBar = {
-        }
-    ) { padding ->
+    Scaffold { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
-                .padding(paddingValues = padding)
+                .background(Brush.verticalGradient(gradientColors))
+                .padding(padding)
                 .padding(16.dp)
-
         ) {
+            // Image Picker Box
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -119,9 +100,7 @@ fun ProductScreen(
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        onPickImage()
-                    }
+                    ) { onPickImage() }
                     .padding(10.dp)
             ) {
                 if (selectedImageUri != null) {
@@ -131,22 +110,23 @@ fun ProductScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
-                } else if (initialProduct?.image != null) {
+                } else if (!initialProduct?.image.isNullOrEmpty()) {
                     AsyncImage(
-                        model = initialProduct.image,
+                        model = initialProduct?.image,
                         contentDescription = "Product Image",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
                 } else {
                     Image(
-                        painterResource(R.drawable.placeholder),
+                        painter = painterResource(R.drawable.placeholder),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
                 }
             }
+
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -160,6 +140,7 @@ fun ProductScreen(
                 label = { Text("Product Description") },
                 modifier = Modifier.fillMaxWidth()
             )
+
             OutlinedTextField(
                 value = price,
                 onValueChange = { price = it },
@@ -167,7 +148,30 @@ fun ProductScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Select Category", fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            androidx.compose.foundation.lazy.LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(categories.size) { index ->
+                    val category = categories[index]
+                    val isSelected = selectedCategory == category
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = if (isSelected) Color(0xFF6C63FF) else Color.White,
+                        shadowElevation = 4.dp,
+                        modifier = Modifier.clickable { selectedCategory = category }
+                    ) {
+                        Text(
+                            text = category,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            color = if (isSelected) Color.White else Color.Black
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
@@ -176,32 +180,34 @@ fun ProductScreen(
                         return@Button
                     }
 
+                    val priceValue = price.toDoubleOrNull() ?: 0.0
+                    
                     val saveProduct: (String?) -> Unit = { imageUrl ->
                         val product = ProductModel(
                             productId = initialProduct?.productId ?: UUID.randomUUID().toString(),
                             name = name,
                             description = description,
-                            price = price.toDouble(),
-                            categoryId = initialProduct?.categoryId ?: "",
+                            price = priceValue,
+                            categoryId = selectedCategory,
                             image = imageUrl ?: initialProduct?.image
                         )
 
                         if (initialProduct == null) {
-                            viewModel.addProduct(product) { success, message ->
+                            viewModel.addProduct(product) { success, _ ->
                                 if (success) {
                                     Toast.makeText(context, "Product added successfully", Toast.LENGTH_SHORT).show()
                                     onSuccess()
                                 } else {
-                                    Toast.makeText(context, "Error: $message", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Error adding product", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         } else {
-                            viewModel.updateProduct(product) { success, message ->
+                            viewModel.updateProduct(product) { success, _ ->
                                 if (success) {
                                     Toast.makeText(context, "Product updated successfully", Toast.LENGTH_SHORT).show()
                                     onSuccess()
                                 } else {
-                                    Toast.makeText(context, "Error: $message", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Error updating product", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
@@ -209,35 +215,21 @@ fun ProductScreen(
 
                     if (selectedImageUri != null) {
                         viewModel.uploadImage(context, selectedImageUri) { imageUrl ->
-                            saveProduct(imageUrl)
+                            if (imageUrl != null) {
+                                saveProduct(imageUrl)
+                            } else {
+                                Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     } else {
                         saveProduct(null)
                     }
-
                 },
                 shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth().height(50.dp)
             ) {
                 Text(if (initialProduct == null) "Add Product" else "Update Product")
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-
         }
-
     }
 }
-
-
-
-@Preview
-@Composable
-fun ProductActivityPreview() {
-    ProductScreen(
-        selectedImageUri = null, // or pass a mock Uri if needed
-        onPickImage = {} // no-op
-    )
-}
-

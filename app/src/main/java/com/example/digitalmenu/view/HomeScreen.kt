@@ -68,7 +68,7 @@ val gradientColors = listOf(
 
 @Composable
 fun HomeScreen(
-    viewModel: ProductViewModel = ProductViewModel(ProductRepoImpl()),
+    viewModel: ProductViewModel,
     favoriteItems: List<ProductModel> = emptyList(),
     onFavoriteToggle: (ProductModel) -> Unit = {},
     onAddToCart: (ProductModel) -> Unit,
@@ -80,7 +80,9 @@ fun HomeScreen(
     val menuItems by viewModel.allProducts.observeAsState(emptyList())
     
     LaunchedEffect(Unit) {
-        viewModel.getAllProduct()
+        if (viewModel.allProducts.value.isNullOrEmpty()) {
+            viewModel.getAllProduct()
+        }
     }
 
     var showDeleteDialog by remember { mutableStateOf<ProductModel?>(null) }
@@ -93,9 +95,14 @@ fun HomeScreen(
             confirmButton = {
                 TextButton(onClick = {
                     showDeleteDialog?.let { product ->
+                        // Optimistic UI update: remove from local state immediately
+                        val currentList = viewModel.allProducts.value ?: emptyList()
+                        viewModel.allProducts.postValue(currentList.filter { it.productId != product.productId })
+                        
                         viewModel.deleteProduct(product.productId) { success, message ->
-                            if (success) {
-                                viewModel.getAllProduct() // Refresh list
+                            if (!success) {
+                                // Revert or show error if deletion failed
+                                viewModel.getAllProduct() 
                             }
                         }
                     }
@@ -211,11 +218,10 @@ fun HomeScreen(
                 }
             } else {
                 items(filteredItems) { item ->
-                    val drawableRes = item.getImageResource()
+
 
                     MenuItemCard(
                         product = item,
-                        imageRes = drawableRes,
                         isFavorite = favoriteItems.any { it.productId == item.productId },
                         onFavoriteClick = { onFavoriteToggle(item) },
                         onAddToCart = { onAddToCart(item) },
@@ -232,7 +238,7 @@ fun HomeScreen(
 fun HomeHeader() {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            text = "Digital Menu 🍽️",
+            text = "Digital Menu",
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold
         )
@@ -310,7 +316,6 @@ fun CategoryChip(
 @Composable
 fun MenuItemCard(
     product: ProductModel,
-    imageRes: Int,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
     onAddToCart: () -> Unit,
@@ -333,9 +338,10 @@ fun MenuItemCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (product.image != null && product.image.isNotEmpty()) {
+            val imageUrl = product.image
+            if (!imageUrl.isNullOrEmpty()) {
                 AsyncImage(
-                    model = product.image,
+                    model = imageUrl,
                     contentDescription = product.name,
                     modifier = Modifier
                         .size(64.dp)
@@ -344,7 +350,7 @@ fun MenuItemCard(
                 )
             } else {
                 Image(
-                    painter = painterResource(id = imageRes),
+                    painter = painterResource(id = R.drawable.placeholder),
                     contentDescription = product.name,
                     modifier = Modifier
                         .size(64.dp)

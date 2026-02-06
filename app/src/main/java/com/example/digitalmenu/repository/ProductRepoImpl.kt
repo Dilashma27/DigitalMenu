@@ -37,9 +37,8 @@ class ProductRepoImpl: ProductRepo {
     ) {
         var id = ref.push().key.toString()
         model.productId = id
-
-        ref.child(id).setValue(model)
-            .addOnCompleteListener { //jatichoti.child()garyo teti bhitra bhitra chirxa
+        ref.child(id).setValue(model.toMap())
+            .addOnCompleteListener {
                 if (it.isSuccessful) {
                     callback(true, "Product added")
                 } else {
@@ -73,10 +72,8 @@ class ProductRepoImpl: ProductRepo {
     override fun getAllProduct(callback: (Boolean, String, List<ProductModel>?) -> Unit) {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                val allProducts = mutableListOf<ProductModel>()
                 if (snapshot.exists()) {
-                    val allProducts = mutableListOf<ProductModel>()
-
-
                     for (data in snapshot.children) {
                         val product = data.getValue(ProductModel::class.java)
                         if (product != null) {
@@ -84,6 +81,8 @@ class ProductRepoImpl: ProductRepo {
                         }
                     }
                     callback(true, "product fetched", allProducts)
+                } else {
+                    callback(true, "No products found", emptyList())
                 }
             }
 
@@ -150,7 +149,7 @@ class ProductRepoImpl: ProductRepo {
     override fun deleteProduct(productId: String, callback: (Boolean, String) -> Unit) {
         ref.child(productId).removeValue().addOnCompleteListener {
             if (it.isSuccessful) {
-                callback(true, "Product added successfully")
+                callback(true, "Product deleted successfully")
             } else {
                 callback(false, "${it.exception?.message}")
             }

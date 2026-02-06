@@ -39,6 +39,8 @@ import com.example.digitalmenu.ui.order.OrderScreen
 import com.example.digitalmenu.ui.favorites.FavoritesScreen
 import com.example.digitalmenu.ui.profile.ProfileScreen
 import android.content.Intent
+import com.example.digitalmenu.ViewModel.ProductViewModel
+import com.example.digitalmenu.repository.ProductRepoImpl
 
 
 class DashboardActivity : ComponentActivity() {
@@ -63,6 +65,9 @@ fun DashboardBody(){
     var selectedIndex by remember { mutableStateOf(0) }
     val favoriteItems = remember { mutableStateOf<List<ProductModel>>(emptyList()) }
     val cartItems = remember { mutableStateOf<List<CartItemModel>>(emptyList()) }
+    
+    // Scoped ViewModel to prevent recreation and allow real-time sync
+    val productViewModel = remember { ProductViewModel(ProductRepoImpl()) }
 
 
     var listNav = listOf(
@@ -192,6 +197,7 @@ fun DashboardBody(){
 
             when(selectedIndex) {
                 0 -> HomeScreen(
+                    viewModel = productViewModel,
                     favoriteItems = favoriteItems.value,
                     onFavoriteToggle = onFavoriteToggle,
                     onAddToCart = onAddToCart,
@@ -229,6 +235,7 @@ fun DashboardBody(){
                 )
                 3 -> ProfileScreen()
                 else -> HomeScreen(
+                    viewModel = productViewModel,
                     favoriteItems = favoriteItems.value,
                     onFavoriteToggle = onFavoriteToggle,
                     onAddToCart = onAddToCart,
