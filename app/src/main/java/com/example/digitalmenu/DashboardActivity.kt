@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.digitalmenu.model.CartItemModel
 import com.example.digitalmenu.model.ProductModel
 import com.example.digitalmenu.ui.home.HomeScreen
 import com.example.digitalmenu.ui.order.OrderScreen
@@ -57,6 +58,8 @@ fun DashboardBody(){
 
     var selectedIndex by remember { mutableStateOf(0) }
     val favoriteItems = remember { mutableStateOf<List<ProductModel>>(emptyList()) }
+    val cartItems = remember { mutableStateOf<List<CartItemModel>>(emptyList()) }
+
 
     var listNav = listOf(
         NavItem(
@@ -146,42 +149,60 @@ fun DashboardBody(){
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            when(selectedIndex){
-                0-> HomeScreen( favoriteItems = favoriteItems.value,
-                    onFavoriteToggle = { item ->
-                        val isFavorite = favoriteItems.value.any { it.productId == item.productId }
+            val onAddToCart: (ProductModel) -> Unit = { item ->
+                val existingItem = cartItems.value.find { it.product.productId == item.productId }
+                if (existingItem != null) {
+                    cartItems.value = cartItems.value.map {
+                        if (it.product.productId == item.productId) it.copy(quantity = it.quantity + 1) else it
+                    }
+                } else {
+                    cartItems.value = cartItems.value + CartItemModel(product = item, quantity = 1)
+                }
+                Toast.makeText(context, "${item.name} added to cart", Toast.LENGTH_SHORT).show()
+            }
 
-                        if (isFavorite) {
-                            // Remove from favorites
-                            favoriteItems.value = favoriteItems.value.filter { it.productId != item.productId }
-                            Toast.makeText(context, "Item removed from favorites", Toast.LENGTH_SHORT).show()
-                        } else {
-                            // Add to favorites
-                            favoriteItems.value = favoriteItems.value + item
-                            Toast.makeText(context, "Item added to favorites", Toast.LENGTH_SHORT).show()
-                        }
-                    })
-                1-> OrderScreen()
-                2-> FavoritesScreen(
+            val onFavoriteToggle: (ProductModel) -> Unit = { item ->
+                val isFavorite = favoriteItems.value.any { it.productId == item.productId }
+                if (isFavorite) {
+                    favoriteItems.value = favoriteItems.value.filter { it.productId != item.productId }
+                    Toast.makeText(context, "Item removed from favorites", Toast.LENGTH_SHORT).show()
+                } else {
+                    favoriteItems.value = favoriteItems.value + item
+                    Toast.makeText(context, "Item added to favorites", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            when(selectedIndex) {
+                0 -> HomeScreen(
                     favoriteItems = favoriteItems.value,
-                    onRemoveFavorite = { item ->
-                        favoriteItems.value = favoriteItems.value.filter { it.productId != item.productId }
-                        Toast.makeText(context, "Item removed from favorites", Toast.LENGTH_SHORT).show()
+                    onFavoriteToggle = onFavoriteToggle,
+                    onAddToCart = onAddToCart
+                )
+                1 -> OrderScreen(
+                    cartItems = cartItems.value,
+                    onIncrease = { item ->
+                        cartItems.value = cartItems.value.map {
+                            if (it.product.productId == item.product.productId) it.copy(quantity = it.quantity + 1) else it
+                        }
+                    },
+                    onDecrease = { item ->
+                        cartItems.value = cartItems.value.map {
+                            if (it.product.productId == item.product.productId && it.quantity > 1) it.copy(quantity = it.quantity - 1) else it
+                        }
+                    },
+                    onRemove = { item ->
+                        cartItems.value = cartItems.value.filter { it.product.productId != item.product.productId }
                     }
                 )
-                3-> ProfileScreen()
-                else -> HomeScreen( favoriteItems = favoriteItems.value,
-                    onFavoriteToggle = { item ->
-                        val isFavorite = favoriteItems.value.any { it.productId == item.productId }
-
-                        if (isFavorite) {
-                            favoriteItems.value = favoriteItems.value.filter { it.productId != item.productId }
-                            Toast.makeText(context, "Item removed from favorites", Toast.LENGTH_SHORT).show()
-                        } else {
-                            favoriteItems.value = favoriteItems.value + item
-                            Toast.makeText(context, "Item added to favorites", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                2 -> FavoritesScreen(
+                    favoriteItems = favoriteItems.value,
+                    onRemoveFavorite = onFavoriteToggle
+                )
+                3 -> ProfileScreen()
+                else -> HomeScreen(
+                    favoriteItems = favoriteItems.value,
+                    onFavoriteToggle = onFavoriteToggle,
+                    onAddToCart = onAddToCart
                 )
             }
         }

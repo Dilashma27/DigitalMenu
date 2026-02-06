@@ -56,7 +56,8 @@ val gradientColors = listOf(
 @Composable
 fun HomeScreen(
     favoriteItems: List<ProductModel> = emptyList(),
-    onFavoriteToggle: (ProductModel) -> Unit = {}
+    onFavoriteToggle: (ProductModel) -> Unit = {},
+    onAddToCart: (ProductModel) -> Unit
 ) {
     // Define menu items using ProductModel
     val menuItems = listOf(
@@ -93,6 +94,7 @@ fun HomeScreen(
             image = ""
         )
     )
+
 
     // Search state
     var searchText by remember { mutableStateOf("") }
@@ -185,7 +187,8 @@ fun HomeScreen(
                         product = item,
                         imageRes = drawableRes,
                         isFavorite = favoriteItems.any { it.productId == item.productId },
-                        onFavoriteClick = { onFavoriteToggle(item) }
+                        onFavoriteClick = { onFavoriteToggle(item) },
+                        onAddToCart = { onAddToCart(item) }
                     )
                 }
             }
@@ -277,7 +280,8 @@ fun MenuItemCard(
     product: ProductModel,
     imageRes: Int,
     isFavorite: Boolean,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    onAddToCart: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -310,6 +314,21 @@ fun MenuItemCard(
                 Text(product.name, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Rs. ${product.price.toInt()}", color = Color.Black)
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = Color(0xFF6C63FF),
+                    modifier = Modifier.clickable { onAddToCart() }
+                ) {
+                    Text(
+                        text = "Add to Cart",
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
             }
 
             IconButton(onClick = onFavoriteClick) {

@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,35 +66,32 @@ fun SplashBody() {
     }
 
     Scaffold { padding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues = padding)
                 .background(
                     brush = Brush.verticalGradient(colors = gradientColors)
                 ),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            contentAlignment = Alignment.Center
         ) {
-            item {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.menulogo),
-                        contentDescription = "Digital Menu",
-                        modifier = Modifier
-                            .size(180.dp)
-                            .clip(CircleShape)
-                    )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.menulogo),
+                    contentDescription = "Digital Menu",
+                    modifier = Modifier
+                        .size(180.dp)
+                        .clip(CircleShape)
+                )
 
-                    Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(100.dp))
 
-                    CircularProgressIndicator(
-                        color = Color.Blue
-                    )
-                }
+                CircularProgressIndicator(
+                    color = Color.Blue
+                )
             }
         }
     }

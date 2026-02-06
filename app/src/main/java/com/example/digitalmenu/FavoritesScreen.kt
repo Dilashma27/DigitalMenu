@@ -84,17 +84,9 @@ fun FavoritesScreen(
                 }
 
                 items(favoriteItems) { item ->
-                    val drawableRes = when (item.productId) {
-                        "1" -> R.drawable.pizza
-                        "2" -> R.drawable.burger
-                        "3" -> R.drawable.momo
-                        "4" -> R.drawable.chocolava
-                        else -> R.drawable.pizza
-                    }
-
                     FavoriteItemCard(
                         product = item,
-                        imageRes = drawableRes,
+                        imageRes = item.getImageResource(),
                         onRemoveClick = { onRemoveFavorite(item) }
                     )
                 }
