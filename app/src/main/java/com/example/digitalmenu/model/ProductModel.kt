@@ -11,11 +11,17 @@ data class ProductModel(
     val image: String? = null
 ){
     fun getImageResource(): Int {
-        return when (productId) {
-            "1" -> R.drawable.pizza
-            "2" -> R.drawable.burger
-            "3" -> R.drawable.momo
-            "4" -> R.drawable.chocolava
+        if (productId == "1") return R.drawable.pizza
+        if (productId == "2") return R.drawable.burger
+        if (productId == "3") return R.drawable.momo
+        if (productId == "4") return R.drawable.chocolava
+
+        val lowerName = name.lowercase()
+        return when {
+            lowerName.contains("pizza") -> R.drawable.pizza
+            lowerName.contains("burger") -> R.drawable.burger
+            lowerName.contains("momo") -> R.drawable.momo
+            lowerName.contains("chocolava") || lowerName.contains("cake") || lowerName.contains("dessert") -> R.drawable.chocolava
             else -> R.drawable.pizza
         }
     }

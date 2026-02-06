@@ -59,44 +59,49 @@ class AddProductActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         imageUtils = ImageUtils(this, this)
-        imageUtils.registerLaunchers { uri ->
-            selectedImageUri = uri
-        }
-        setContent {
+        val productId = intent.getStringExtra("productId")
+        val initialProduct = if (productId != null) {
+            ProductModel(
+                productId = productId,
+                name = intent.getStringExtra("name") ?: "",
+                description = intent.getStringExtra("description") ?: "",
+                price = intent.getDoubleExtra("price", 0.0),
+                categoryId = intent.getStringExtra("categoryId") ?: "",
+                image = intent.getStringExtra("image")
+            )
+        } else null
 
+        setContent {
             ProductScreen(
                 selectedImageUri = selectedImageUri,
-                onPickImage = { imageUtils.launchImagePicker() }
+                initialProduct = initialProduct,
+                onPickImage = { imageUtils.launchImagePicker() },
+                onSuccess = { finish() }
             )
-
         }
     }
 }
 
 @Composable
 fun ProductScreen(
-    viewModel: ProductViewModel = ProductViewModel(ProductRepoImpl ()),
+    viewModel: ProductViewModel = ProductViewModel(ProductRepoImpl()),
     selectedImageUri: Uri?,
-    onPickImage: () -> Unit
-
+    initialProduct: ProductModel? = null,
+    onPickImage: () -> Unit,
+    onSuccess: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
-//    val productList by viewModel.productList.observeAsState(emptyList())
 
 
-    var name by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(initialProduct?.name ?: "") }
+    var description by remember { mutableStateOf(initialProduct?.description ?: "") }
+    var price by remember { mutableStateOf(initialProduct?.price?.toString() ?: "") }
 
 
-//    LaunchedEffect (Unit) {
-//        viewModel.getAllProduct()
-//    }
 
     Scaffold(
         topBar = {
-//            TopAppBar(title = {Text("Product Activity")})
         }
     ) { padding ->
         Column(
@@ -123,6 +128,13 @@ fun ProductScreen(
                     AsyncImage(
                         model = selectedImageUri,
                         contentDescription = "Selected Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else if (initialProduct?.image != null) {
+                    AsyncImage(
+                        model = initialProduct.image,
+                        contentDescription = "Product Image",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -159,45 +171,55 @@ fun ProductScreen(
 
             Button(
                 onClick = {
-                    if(selectedImageUri != null){
-                        viewModel.uploadImage(context ,selectedImageUri){
-                                imageUrl->
-                            if(imageUrl != null){
+                    if (name.isBlank() || description.isBlank() || price.isBlank()) {
+                        Toast.makeText(context, "Fill all fields", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
 
-                                Log.d("PRODUCT", "Add Product button clicked")
-                                if (name.isBlank() || description.isBlank() || price.isBlank()) {
-                                    Toast.makeText(context, "Fill all fields", Toast.LENGTH_SHORT).show()
+                    val saveProduct: (String?) -> Unit = { imageUrl ->
+                        val product = ProductModel(
+                            productId = initialProduct?.productId ?: UUID.randomUUID().toString(),
+                            name = name,
+                            description = description,
+                            price = price.toDouble(),
+                            categoryId = initialProduct?.categoryId ?: "",
+                            image = imageUrl ?: initialProduct?.image
+                        )
 
+                        if (initialProduct == null) {
+                            viewModel.addProduct(product) { success, message ->
+                                if (success) {
+                                    Toast.makeText(context, "Product added successfully", Toast.LENGTH_SHORT).show()
+                                    onSuccess()
+                                } else {
+                                    Toast.makeText(context, "Error: $message", Toast.LENGTH_SHORT).show()
                                 }
-                                val productId = UUID.randomUUID().toString()
-                                val product = ProductModel(
-                                    productId = productId,
-                                    name = name,
-                                    description = description,
-                                    price = price.toDouble(),
-                                    categoryId = "",
-                                    image = imageUrl
-                                )
-                                viewModel.addProduct(product) {success, message->
-                                    if (success){
-                                        Toast.makeText(context, "Product added successfully", Toast.LENGTH_SHORT).show()
-                                    }else{
-
-                                    }
+                            }
+                        } else {
+                            viewModel.updateProduct(product) { success, message ->
+                                if (success) {
+                                    Toast.makeText(context, "Product updated successfully", Toast.LENGTH_SHORT).show()
+                                    onSuccess()
+                                } else {
+                                    Toast.makeText(context, "Error: $message", Toast.LENGTH_SHORT).show()
                                 }
-
-                                name = ""
-                                description = ""
-                                price = ""
                             }
                         }
+                    }
+
+                    if (selectedImageUri != null) {
+                        viewModel.uploadImage(context, selectedImageUri) { imageUrl ->
+                            saveProduct(imageUrl)
+                        }
+                    } else {
+                        saveProduct(null)
                     }
 
                 },
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Add Product")
+                Text(if (initialProduct == null) "Add Product" else "Update Product")
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -208,24 +230,7 @@ fun ProductScreen(
     }
 }
 
-@Composable
-fun ProductItem(product: ProductModel) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = product.name,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(text = product.description)
-            Text(text = "Rs. ${product.price}")
-        }
-    }
-}
+
 
 @Preview
 @Composable

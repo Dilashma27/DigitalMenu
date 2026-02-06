@@ -1,5 +1,6 @@
 package com.example.digitalmenu.ui.home
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,8 +20,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -29,8 +34,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,13 +48,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import coil3.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.digitalmenu.R
+import com.example.digitalmenu.ViewModel.ProductViewModel
 import com.example.digitalmenu.model.ProductModel
+import com.example.digitalmenu.repository.ProductRepoImpl
+import com.example.digitalmenu.AddProductActivity
 
 val gradientColors = listOf(
     Color(0xFFD1B3FF),
@@ -55,45 +68,49 @@ val gradientColors = listOf(
 
 @Composable
 fun HomeScreen(
+    viewModel: ProductViewModel = ProductViewModel(ProductRepoImpl()),
     favoriteItems: List<ProductModel> = emptyList(),
     onFavoriteToggle: (ProductModel) -> Unit = {},
-    onAddToCart: (ProductModel) -> Unit
+    onAddToCart: (ProductModel) -> Unit,
+    onEditClick: (ProductModel) -> Unit = {},
+    onDeleteClick: (ProductModel) -> Unit = {}
 ) {
-    // Define menu items using ProductModel
-    val menuItems = listOf(
-        ProductModel(
-            productId = "1",
-            name = "Margherita Pizza",
-            description = "Classic Italian pizza",
-            price = 299.0,
-            categoryId = "snacks",
-            image = ""
-        ),
-        ProductModel(
-            productId = "2",
-            name = "Burger",
-            description = "Delicious burger",
-            price = 250.0,
-            categoryId = "snacks",
-            image = ""
-        ),
-        ProductModel(
-            productId = "3",
-            name = "Mo:Mo",
-            description = "Steamed dumplings",
-            price = 150.0,
-            categoryId = "snacks",
-            image = ""
-        ),
-        ProductModel(
-            productId = "4",
-            name = "Chocolava",
-            description = "Chocolate lava cake",
-            price = 100.0,
-            categoryId = "dessert",
-            image = ""
+    val context = LocalContext.current
+    // Fetch real products from ViewModel
+    val menuItems by viewModel.allProducts.observeAsState(emptyList())
+    
+    LaunchedEffect(Unit) {
+        viewModel.getAllProduct()
+    }
+
+    var showDeleteDialog by remember { mutableStateOf<ProductModel?>(null) }
+
+    if (showDeleteDialog != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = null },
+            title = { Text("Delete Product") },
+            text = { Text("Are you sure you want to delete ${showDeleteDialog?.name}?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDeleteDialog?.let { product ->
+                        viewModel.deleteProduct(product.productId) { success, message ->
+                            if (success) {
+                                viewModel.getAllProduct() // Refresh list
+                            }
+                        }
+                    }
+                    showDeleteDialog = null
+                }) {
+                    Text("Delete", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = null }) {
+                    Text("Cancel")
+                }
+            }
         )
-    )
+    }
 
 
     // Search state
@@ -104,7 +121,7 @@ fun HomeScreen(
 
     // Filtered items based on search and category
     val filteredItems = remember(searchText, selectedCategory, menuItems) {
-        var items = menuItems
+        var items = menuItems ?: emptyList()
 
         // Filter by category
         if (selectedCategory != "All") {
@@ -155,40 +172,55 @@ fun HomeScreen(
             // Show message if no results found
             if (filteredItems.isEmpty()) {
                 item {
-                    Box(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(32.dp),
-                        contentAlignment = Alignment.Center
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Text(
                             text = if (searchText.isNotBlank()) {
                                 "No items found for \"$searchText\""
+                            } else if (selectedCategory != "All") {
+                                "No items in category \"$selectedCategory\""
                             } else {
-                                "No items in this category"
+                                "Your menu is empty! 🍽️"
                             },
                             color = Color.Gray,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        if (searchText.isBlank() && selectedCategory == "All") {
+                            Button(
+                                onClick = {
+                                    val intent = Intent(context, AddProductActivity::class.java)
+                                    context.startActivity(intent)
+                                },
+                                shape = RoundedCornerShape(12.dp),
+                                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF6C63FF)
+                                )
+                            ) {
+                                Text("Add Your First Product", color = Color.White)
+                            }
+                        }
                     }
                 }
             } else {
                 items(filteredItems) { item ->
-                    val drawableRes = when (item.productId) {
-                        "1" -> R.drawable.pizza
-                        "2" -> R.drawable.burger
-                        "3" -> R.drawable.momo
-                        "4" -> R.drawable.chocolava
-                        else -> R.drawable.pizza
-                    }
+                    val drawableRes = item.getImageResource()
 
                     MenuItemCard(
                         product = item,
                         imageRes = drawableRes,
                         isFavorite = favoriteItems.any { it.productId == item.productId },
                         onFavoriteClick = { onFavoriteToggle(item) },
-                        onAddToCart = { onAddToCart(item) }
+                        onAddToCart = { onAddToCart(item) },
+                        onEditClick = { onEditClick(item) },
+                        onDeleteClick = { showDeleteDialog = item }
                     )
                 }
             }
@@ -281,7 +313,9 @@ fun MenuItemCard(
     imageRes: Int,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
-    onAddToCart: () -> Unit
+    onAddToCart: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -299,14 +333,25 @@ fun MenuItemCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = product.name,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
+            if (product.image != null && product.image.isNotEmpty()) {
+                AsyncImage(
+                    model = product.image,
+                    contentDescription = product.name,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = imageRes),
+                    contentDescription = product.name,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -331,12 +376,28 @@ fun MenuItemCard(
                 }
             }
 
-            IconButton(onClick = onFavoriteClick) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    tint = if (isFavorite) Color.Red else Color.Gray
-                )
+            Column(horizontalAlignment = Alignment.End) {
+                IconButton(onClick = onFavoriteClick) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) Color.Red else Color.Gray
+                    )
+                }
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit",
+                        tint = Color.Blue
+                    )
+                }
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = Color.Red
+                    )
+                }
             }
         }
     }

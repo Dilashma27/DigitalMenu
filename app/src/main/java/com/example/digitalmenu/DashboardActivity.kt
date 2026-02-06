@@ -15,6 +15,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -35,6 +38,7 @@ import com.example.digitalmenu.ui.home.HomeScreen
 import com.example.digitalmenu.ui.order.OrderScreen
 import com.example.digitalmenu.ui.favorites.FavoritesScreen
 import com.example.digitalmenu.ui.profile.ProfileScreen
+import android.content.Intent
 
 
 class DashboardActivity : ComponentActivity() {
@@ -122,6 +126,20 @@ fun DashboardBody(){
                 }
             )
         },
+        floatingActionButton = {
+            if (selectedIndex == 0) {
+                FloatingActionButton(
+                    onClick = {
+                        val intent = Intent(context, AddProductActivity::class.java)
+                        context.startActivity(intent)
+                    },
+                    containerColor = Color.Blue,
+                    contentColor = Color.White
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Product")
+                }
+            }
+        },
         bottomBar = {
             NavigationBar {
                 listNav.forEachIndexed { index,item->
@@ -176,7 +194,18 @@ fun DashboardBody(){
                 0 -> HomeScreen(
                     favoriteItems = favoriteItems.value,
                     onFavoriteToggle = onFavoriteToggle,
-                    onAddToCart = onAddToCart
+                    onAddToCart = onAddToCart,
+                    onEditClick = { product ->
+                        val intent = Intent(context, AddProductActivity::class.java).apply {
+                            putExtra("productId", product.productId)
+                            putExtra("name", product.name)
+                            putExtra("description", product.description)
+                            putExtra("price", product.price)
+                            putExtra("categoryId", product.categoryId)
+                            putExtra("image", product.image)
+                        }
+                        context.startActivity(intent)
+                    }
                 )
                 1 -> OrderScreen(
                     cartItems = cartItems.value,
@@ -202,7 +231,18 @@ fun DashboardBody(){
                 else -> HomeScreen(
                     favoriteItems = favoriteItems.value,
                     onFavoriteToggle = onFavoriteToggle,
-                    onAddToCart = onAddToCart
+                    onAddToCart = onAddToCart,
+                    onEditClick = { product ->
+                        val intent = Intent(context, AddProductActivity::class.java).apply {
+                            putExtra("productId", product.productId)
+                            putExtra("name", product.name)
+                            putExtra("description", product.description)
+                            putExtra("price", product.price)
+                            putExtra("categoryId", product.categoryId)
+                            putExtra("image", product.image)
+                        }
+                        context.startActivity(intent)
+                    }
                 )
             }
         }

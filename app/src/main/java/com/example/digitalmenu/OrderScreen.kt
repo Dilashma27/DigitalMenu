@@ -28,6 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.digitalmenu.model.CartItemModel
 
+val gradientColors = listOf(
+    Color(0xFFD1B3FF),
+    Color(0xFF9BB7FF)
+)
 @Composable
 fun OrderScreen(
     cartItems: List<CartItemModel>,
