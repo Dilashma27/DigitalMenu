@@ -41,6 +41,8 @@ import com.example.digitalmenu.ui.profile.ProfileScreen
 import android.content.Intent
 import com.example.digitalmenu.ViewModel.ProductViewModel
 import com.example.digitalmenu.repository.ProductRepoImpl
+import com.google.firebase.auth.FirebaseAuth
+import com.example.digitalmenu.view.LoginActivity
 
 
 class DashboardActivity : ComponentActivity() {
@@ -233,7 +235,15 @@ fun DashboardBody(){
                     favoriteItems = favoriteItems.value,
                     onRemoveFavorite = onFavoriteToggle
                 )
-                3 -> ProfileScreen()
+                3 -> ProfileScreen(
+                    onLogout = {
+                        FirebaseAuth.getInstance().signOut()
+                        val intent = Intent(context, LoginActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        context.startActivity(intent)
+                        (context as? Activity)?.finish()
+                    }
+                )
                 else -> HomeScreen(
                     viewModel = productViewModel,
                     favoriteItems = favoriteItems.value,

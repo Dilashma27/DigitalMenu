@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -109,6 +110,13 @@ fun ProfileScreen(
                     icon = Icons.Default.Edit,
                     text = "Edit Profile",
                     onClick = onEditProfile
+                )
+                Divider(modifier = Modifier.padding(vertical = 4.dp))
+                ProfileActionItem(
+                    icon = Icons.Default.ExitToApp,
+                    text = "Logout",
+                    textColor = Color.Red,
+                    onClick = onLogout
                 )
             }
         }

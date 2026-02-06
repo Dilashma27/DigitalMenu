@@ -78,7 +78,7 @@ fun HomeScreen(
     val context = LocalContext.current
     // Fetch real products from ViewModel
     val menuItems by viewModel.allProducts.observeAsState(emptyList())
-    
+
     LaunchedEffect(Unit) {
         if (viewModel.allProducts.value.isNullOrEmpty()) {
             viewModel.getAllProduct()
@@ -98,11 +98,11 @@ fun HomeScreen(
                         // Optimistic UI update: remove from local state immediately
                         val currentList = viewModel.allProducts.value ?: emptyList()
                         viewModel.allProducts.postValue(currentList.filter { it.productId != product.productId })
-                        
+
                         viewModel.deleteProduct(product.productId) { success, message ->
                             if (!success) {
                                 // Revert or show error if deletion failed
-                                viewModel.getAllProduct() 
+                                viewModel.getAllProduct()
                             }
                         }
                     }
@@ -146,89 +146,83 @@ fun HomeScreen(
         items
     }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(colors = gradientColors)
             ),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 100.dp)
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                HomeHeader()
-            }
+        item {
+            HomeHeader()
+        }
 
-            item {
-                SearchBar(
-                    searchText = searchText,
-                    onSearchTextChange = { searchText = it }
-                )
-            }
+        item {
+            SearchBar(
+                searchText = searchText,
+                onSearchTextChange = { searchText = it }
+            )
+        }
 
-            item {
-                CategorySection(
-                    selectedCategory = selectedCategory,
-                    onCategorySelected = { selectedCategory = it }
-                )
-            }
+        item {
+            CategorySection(
+                selectedCategory = selectedCategory,
+                onCategorySelected = { selectedCategory = it }
+            )
+        }
 
-            // Show message if no results found
-            if (filteredItems.isEmpty()) {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = if (searchText.isNotBlank()) {
-                                "No items found for \"$searchText\""
-                            } else if (selectedCategory != "All") {
-                                "No items in category \"$selectedCategory\""
-                            } else {
-                                "Your menu is empty! 🍽️"
+        // Show message if no results found
+        if (filteredItems.isEmpty()) {
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = if (searchText.isNotBlank()) {
+                            "No items found for \"$searchText\""
+                        } else if (selectedCategory != "All") {
+                            "No items in category \"$selectedCategory\""
+                        } else {
+                            "Your menu is empty! 🍽️"
+                        },
+                        color = Color.Gray,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    if (searchText.isBlank() && selectedCategory == "All") {
+                        Button(
+                            onClick = {
+                                val intent = Intent(context, AddProductActivity::class.java)
+                                context.startActivity(intent)
                             },
-                            color = Color.Gray,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        if (searchText.isBlank() && selectedCategory == "All") {
-                            Button(
-                                onClick = {
-                                    val intent = Intent(context, AddProductActivity::class.java)
-                                    context.startActivity(intent)
-                                },
-                                shape = RoundedCornerShape(12.dp),
-                                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF6C63FF)
-                                )
-                            ) {
-                                Text("Add Your First Product", color = Color.White)
-                            }
+                            shape = RoundedCornerShape(12.dp),
+                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF6C63FF)
+                            )
+                        ) {
+                            Text("Add Your First Product", color = Color.White)
                         }
                     }
                 }
-            } else {
-                items(filteredItems) { item ->
-
-
-                    MenuItemCard(
-                        product = item,
-                        isFavorite = favoriteItems.any { it.productId == item.productId },
-                        onFavoriteClick = { onFavoriteToggle(item) },
-                        onAddToCart = { onAddToCart(item) },
-                        onEditClick = { onEditClick(item) },
-                        onDeleteClick = { showDeleteDialog = item }
-                    )
-                }
+            }
+        } else {
+            items(filteredItems) { item ->
+                MenuItemCard(
+                    product = item,
+                    isFavorite = favoriteItems.any { it.productId == item.productId },
+                    onFavoriteClick = { onFavoriteToggle(item) },
+                    onAddToCart = { onAddToCart(item) },
+                    onEditClick = { onEditClick(item) },
+                    onDeleteClick = { showDeleteDialog = item }
+                )
             }
         }
     }
@@ -346,7 +340,9 @@ fun MenuItemCard(
                     modifier = Modifier
                         .size(64.dp)
                         .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(id = R.drawable.placeholder), // Shows placeholder on error
+                    placeholder = painterResource(id = R.drawable.placeholder)
                 )
             } else {
                 Image(

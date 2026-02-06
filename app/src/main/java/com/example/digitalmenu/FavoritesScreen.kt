@@ -63,7 +63,7 @@ fun FavoritesScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "No favorites yet!\n❤️ Add some from the Home screen",
+                    text = "No favorites yet!\n Add some from the Home screen",
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
                     color = Color.Black
@@ -78,7 +78,7 @@ fun FavoritesScreen(
             ) {
                 item {
                     Text(
-                        text = "My Favorites ❤️",
+                        text = "My Favorites ",
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 8.dp)

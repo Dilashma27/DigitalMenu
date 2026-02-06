@@ -63,7 +63,7 @@ fun OrderScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Your cart is empty", color = Color.Gray)
+                Text("Your cart is empty", color = Color.Black)
             }
         } else {
 
