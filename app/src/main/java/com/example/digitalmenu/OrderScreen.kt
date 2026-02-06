@@ -110,6 +110,9 @@ fun CartItemRow(
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
@@ -140,7 +143,7 @@ fun CartItemRow(
                 )
                 Text(
                     text = "Rs. ${cartItem.product.price}",
-                    color = Color.Gray
+                    color = Color.Black
                 )
             }
 

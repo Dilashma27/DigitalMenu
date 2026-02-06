@@ -64,7 +64,7 @@ fun FavoritesScreen(
                     text = "No favorites yet!\n❤️ Add some from the Home screen",
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
-                    color = Color.Gray
+                    color = Color.Black
                 )
             }
         } else {
@@ -104,7 +104,10 @@ fun FavoriteItemCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        elevation = CardDefaults.cardElevation(6.dp)
+        elevation = CardDefaults.cardElevation(6.dp),
+                colors = CardDefaults.cardColors(
+                containerColor = Color.White
+                )
     ) {
         Row(
             modifier = Modifier
