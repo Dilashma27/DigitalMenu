@@ -30,29 +30,29 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.digitalmenu.R
 import com.example.digitalmenu.model.ProductModel
-
 
 val gradientColors = listOf(
     Color(0xFFD1B3FF),
     Color(0xFF9BB7FF)
 )
+
 @Composable
 fun HomeScreen(
     favoriteItems: List<ProductModel> = emptyList(),
@@ -66,7 +66,7 @@ fun HomeScreen(
             description = "Classic Italian pizza",
             price = 299.0,
             categoryId = "snacks",
-            image = ""  // Using drawable instead
+            image = ""
         ),
         ProductModel(
             productId = "2",
@@ -93,52 +93,105 @@ fun HomeScreen(
             image = ""
         )
     )
+
+    // Search state
+    var searchText by remember { mutableStateOf("") }
+
+    // Selected category state
+    var selectedCategory by remember { mutableStateOf("All") }
+
+    // Filtered items based on search and category
+    val filteredItems = remember(searchText, selectedCategory, menuItems) {
+        var items = menuItems
+
+        // Filter by category
+        if (selectedCategory != "All") {
+            items = items.filter { it.categoryId.equals(selectedCategory, ignoreCase = true) }
+        }
+
+        // Filter by search text
+        if (searchText.isNotBlank()) {
+            items = items.filter { item ->
+                item.name.contains(searchText, ignoreCase = true) ||
+                        item.description.contains(searchText, ignoreCase = true)
+            }
+        }
+
+        items
+    }
+
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(colors = gradientColors)
             ),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
             item {
                 HomeHeader()
             }
 
             item {
-                SearchBar()
+                SearchBar(
+                    searchText = searchText,
+                    onSearchTextChange = { searchText = it }
+                )
             }
 
             item {
-                CategorySection()
+                CategorySection(
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = { selectedCategory = it }
+                )
             }
 
-
-            items(menuItems) { item ->
-                val drawableRes = when (item.productId) {
-                    "1" -> R.drawable.pizza
-                    "2" -> R.drawable.burger
-                    "3" -> R.drawable.momo
-                    "4" -> R.drawable.chocolava
-                    else -> R.drawable.pizza
+            // Show message if no results found
+            if (filteredItems.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (searchText.isNotBlank()) {
+                                "No items found for \"$searchText\""
+                            } else {
+                                "No items in this category"
+                            },
+                            color = Color.Gray,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
+            } else {
+                items(filteredItems) { item ->
+                    val drawableRes = when (item.productId) {
+                        "1" -> R.drawable.pizza
+                        "2" -> R.drawable.burger
+                        "3" -> R.drawable.momo
+                        "4" -> R.drawable.chocolava
+                        else -> R.drawable.pizza
+                    }
 
-                MenuItemCard(
-                    product = item,
-                    imageRes = drawableRes,
-                    isFavorite = favoriteItems.any { it.productId == item.productId },
-                    onFavoriteClick = { onFavoriteToggle(item) }
-                )
+                    MenuItemCard(
+                        product = item,
+                        imageRes = drawableRes,
+                        isFavorite = favoriteItems.any { it.productId == item.productId },
+                        onFavoriteClick = { onFavoriteToggle(item) }
+                    )
+                }
             }
         }
     }
 }
-
 
 @Composable
 fun HomeHeader() {
@@ -157,12 +210,13 @@ fun HomeHeader() {
 }
 
 @Composable
-fun SearchBar() {
-    var searchText by remember { mutableStateOf("") }
-
+fun SearchBar(
+    searchText: String,
+    onSearchTextChange: (String) -> Unit
+) {
     OutlinedTextField(
         value = searchText,
-        onValueChange = { searchText = it },
+        onValueChange = onSearchTextChange,
         placeholder = { Text("Search food...") },
         modifier = Modifier
             .fillMaxWidth()
@@ -177,31 +231,43 @@ fun SearchBar() {
 }
 
 @Composable
-fun CategorySection() {
-    val categories = listOf("Snacks", "Drinks", "Dessert")
+fun CategorySection(
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit
+) {
+    val categories = listOf("All", "Snacks", "Drinks", "Dessert")
 
     LazyRow(
         modifier = Modifier.padding(start = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-            items(categories.size) { index ->
-                CategoryChip(text = categories[index])
-            }
+        items(categories.size) { index ->
+            CategoryChip(
+                text = categories[index],
+                isSelected = selectedCategory == categories[index],
+                onClick = { onCategorySelected(categories[index]) }
+            )
+        }
     }
 }
 
 @Composable
-fun CategoryChip(text: String) {
+fun CategoryChip(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = if (isSelected) Color(0xFF6C63FF) else Color.White,
         shadowElevation = 4.dp,
-        modifier = Modifier.clickable { }
+        modifier = Modifier.clickable(onClick = onClick)
     ) {
         Text(
             text = text,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
+            color = if (isSelected) Color.White else Color.Black
         )
     }
 }
@@ -218,7 +284,10 @@ fun MenuItemCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(18.dp),
-        elevation = CardDefaults.cardElevation(6.dp)
+        elevation = CardDefaults.cardElevation(6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
     ) {
         Row(
             modifier = Modifier
