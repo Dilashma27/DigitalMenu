@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.*
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,12 +26,10 @@ import com.example.digitalmenu.R
 @Composable
 fun ProfileScreen(
     userName: String = "Rashmi Jha",
-    fisrtName: String = "Rashmi",
-    lastName: String = "Jha",
     email: String = "rashmi@gmail.com",
     phone: String = "+977 9898561273",
     address: String = "Surkhet, Nepal",
-    onEditProfile: () -> Unit = {},
+
     onLogout: () -> Unit = {}
 ) {
     val gradientColors = listOf(Color(0xFFD1B3FF), Color(0xFF9BB7FF))
@@ -85,7 +84,10 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(6.dp)
+            elevation = CardDefaults.cardElevation(6.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
 
@@ -102,16 +104,12 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(6.dp)
+            elevation = CardDefaults.cardElevation(6.dp),
+                    colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                    )
         ) {
             Column {
-
-                ProfileActionItem(
-                    icon = Icons.Default.Edit,
-                    text = "Edit Profile",
-                    onClick = onEditProfile
-                )
-                Divider(modifier = Modifier.padding(vertical = 4.dp))
                 ProfileActionItem(
                     icon = Icons.Default.ExitToApp,
                     text = "Logout",

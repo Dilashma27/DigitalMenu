@@ -153,7 +153,7 @@ fun LoginBody() {
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Welcome, Glad to see you", fontSize = 14.sp, color = Color.Gray)
+                Text("Welcome, Glad to see you", fontSize = 14.sp, color = Color.Black)
                 Spacer(modifier = Modifier.height(40.dp))
 
                 if (showDialog) {

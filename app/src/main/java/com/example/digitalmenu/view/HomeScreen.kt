@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -58,7 +57,6 @@ import androidx.compose.ui.unit.sp
 import com.example.digitalmenu.R
 import com.example.digitalmenu.ViewModel.ProductViewModel
 import com.example.digitalmenu.model.ProductModel
-import com.example.digitalmenu.repository.ProductRepoImpl
 import com.example.digitalmenu.AddProductActivity
 
 val gradientColors = listOf(
@@ -189,7 +187,7 @@ fun HomeScreen(
                         } else if (selectedCategory != "All") {
                             "No items in category \"$selectedCategory\""
                         } else {
-                            "Your menu is empty! 🍽️"
+                            "Your menu is empty!"
                         },
                         color = Color.Gray,
                         fontSize = 18.sp,
@@ -238,7 +236,7 @@ fun HomeHeader() {
         )
         Text(
             text = "Choose your favorite food",
-            color = Color.Gray,
+            color = Color.Black,
             fontSize = 14.sp
         )
     }
@@ -260,7 +258,7 @@ fun SearchBar(
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color(0xFF6C63FF),
-            unfocusedBorderColor = Color.LightGray
+            unfocusedBorderColor = Color.White
         )
     )
 }

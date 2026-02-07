@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -225,8 +226,13 @@ fun ProductScreen(
                         saveProduct(null)
                     }
                 },
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth().height(50.dp)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth()
+                    .width(160.dp)
+                    .height(50.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text(if (initialProduct == null) "Add Product" else "Update Product")
             }
