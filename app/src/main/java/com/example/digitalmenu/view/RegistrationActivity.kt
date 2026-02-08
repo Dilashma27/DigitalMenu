@@ -63,6 +63,7 @@ import com.example.digitalmenu.R
 import com.example.digitalmenu.model.UserModel
 import com.example.digitalmenu.repository.UserRepoImpl
 import com.example.digitalmenu.ViewModel.UserViewModel
+import androidx.compose.ui.platform.testTag
 
 class RegistrationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,7 +154,8 @@ fun RegistrationBody() {
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 30.dp),
+                        .padding(horizontal = 30.dp)
+                        .testTag("email"),
                     shape = RoundedCornerShape(15.dp)
                 )
 
@@ -273,7 +275,8 @@ fun RegistrationBody() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 30.dp)
-                        .height(50.dp),
+                        .height(50.dp)
+                        .testTag("register"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White
                     )

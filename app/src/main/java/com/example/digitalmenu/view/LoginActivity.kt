@@ -68,6 +68,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.platform.testTag
 import com.example.digitalmenu.DashboardActivity
 import com.example.digitalmenu.R
 import com.example.digitalmenu.ViewModel.UserViewModel
@@ -87,7 +88,7 @@ class LoginActivity : ComponentActivity() {
 }
 
 @Composable
-fun LoginBody() {
+fun LoginBody(userViewModel: UserViewModel = remember { UserViewModel(repo = UserRepoImpl()) }) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
@@ -95,7 +96,6 @@ fun LoginBody() {
 
     val Blue = Color(0xFF2196F3)
 
-    val userViewModel = remember { UserViewModel(repo = UserRepoImpl()) }
     val context = LocalContext.current
     val activity = context as? Activity
 
@@ -207,7 +207,8 @@ fun LoginBody() {
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 30.dp),
+                        .padding(horizontal = 30.dp)
+                        .testTag("email"),
                     shape = RoundedCornerShape(15.dp)
                 )
                 Spacer(modifier = Modifier.height(15.dp))
@@ -242,7 +243,8 @@ fun LoginBody() {
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 30.dp),
+                        .padding(horizontal = 30.dp)
+                        .testTag("password"),
                     shape = RoundedCornerShape(15.dp)
                 )
 
@@ -299,6 +301,7 @@ fun LoginBody() {
                         .fillMaxWidth()
                         .padding(horizontal = 30.dp)
                         .height(50.dp)
+                        .testTag("login")
                 ) {
                     Text("Login", fontSize = 16.sp)
                 }
@@ -360,7 +363,8 @@ fun LoginBody() {
                             context.startActivity(intent)
 
                         }
-                        .padding(vertical = 20.dp),
+                        .padding(vertical = 20.dp)
+                        .testTag("register_link"),
                     textAlign = TextAlign.Center
                 )
             }

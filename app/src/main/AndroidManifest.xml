@@ -22,47 +22,23 @@
             android:name=".AddProductActivity"
             android:exported="true"
             android:label="AddProductActivity"
-            android:theme="@style/Theme.DigitalMenu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.DigitalMenu" />
 
         <activity
             android:name=".view.WelcomeActivity"
             android:exported="true"
             android:label="@string/title_activity_welcome"
-            android:theme="@style/Theme.DigitalMenu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.DigitalMenu" />
         <activity
             android:name=".view.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
-            android:theme="@style/Theme.DigitalMenu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.DigitalMenu" />
         <activity
             android:name=".view.ForgotPassword"
             android:exported="true"
             android:label="ForgotPasswordActivity"
-            android:theme="@style/Theme.DigitalMenu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.DigitalMenu" />
         <activity
             android:name=".view.SplashActivity"
             android:exported="true"
@@ -82,24 +58,12 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.DigitalMenu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.DigitalMenu" />
         <activity
             android:name=".view.RegistrationActivity"
             android:exported="true"
             android:label="@string/title_activity_registration"
-            android:theme="@style/Theme.DigitalMenu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.DigitalMenu" />
     </application>
 
 </manifest>

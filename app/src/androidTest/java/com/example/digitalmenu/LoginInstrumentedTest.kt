@@ -12,7 +12,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNodeWithText
+import com.example.digitalmenu.DashboardActivity
 import com.example.digitalmenu.view.LoginActivity
 import com.example.digitalmenu.view.RegistrationActivity
 import org.junit.After
@@ -34,21 +36,27 @@ class LoginInstrumentedTest {
     @Test
     fun testSuccessfulLogin_navigatesToDashboard() {
         // Enter email
-//        composeRule.onNodeWithTag("email")
-//            .performTextInput("ram@gmail.com")
-//
-//        // Enter password
-//        composeRule.onNodeWithTag("password")
-//            .performTextInput("password")
+        composeRule.onNodeWithTag("email")
+            .performTextInput("jharashmi3027@gmail.com")
+
+        // Enter password
+        composeRule.onNodeWithTag("password")
+            .performTextInput("password")
 
         // Click Login
-        composeRule.onNodeWithTag("register")
+        composeRule.onNodeWithTag("login")
             .performClick()
 
+        // Wait for navigation to DashboardActivity (wait for "Dashboard" title)
+        composeRule.waitUntil(10000) {
+            composeRule.onAllNodes(hasText("Dashboard")).fetchSemanticsNodes().isNotEmpty()
+        }
+        Intents.intended(hasComponent(DashboardActivity::class.java.name))
 
+        // Assert that "Digital Menu" text is present on the Dashboard/Home screen
+        composeRule.onNodeWithText("Digital Menu").assertExists()
 
-//        Intents.intended(hasComponent(DashboardActivity::class.java.name))
-        Intents.intended(hasComponent(RegistrationActivity::class.java.name))
+        // Wait for a few seconds so the user can see the dashboard before the test closes
+        Thread.sleep(5000)
     }
-
 }

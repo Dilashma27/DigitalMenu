@@ -1,13 +1,14 @@
 package com.example.digitalmenu
 
+import com.example.digitalmenu.model.CartItemModel
 import com.example.digitalmenu.model.ProductModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ProductModelTest {
+class CartItemModelTest {
 
     @Test
-    fun productPrice_isCorrect() {
+    fun cartItemQuantity_isCorrect() {
         val product = ProductModel(
             productId = "1",
             name = "Tea",
@@ -15,12 +16,13 @@ class ProductModelTest {
             price = 30.0,
             categoryId = "C1"
         )
+        val cartItem = CartItemModel(product, 2)
 
-        assertEquals(30.0, product.price, 0.0)
+        assertEquals(2, cartItem.quantity)
     }
 
     @Test
-    fun productName_isCorrect() {
+    fun cartItemProduct_isCorrect() {
         val product = ProductModel(
             productId = "2",
             name = "Burger",
@@ -28,20 +30,9 @@ class ProductModelTest {
             price = 150.0,
             categoryId = "C2"
         )
+        val cartItem = CartItemModel(product, 1)
 
-        assertEquals("Burger", product.name)
-    }
-
-    @Test
-    fun productPrice_isCorrectAlternative() {
-        val product = ProductModel(
-            productId = "3",
-            name = "Pizza",
-            description = "Cheesy pizza",
-            price = 300.0,
-            categoryId = "C3"
-        )
-
-        assertEquals(300.0, product.price, 0.0)
+        assertEquals("Burger", cartItem.product.name)
+        assertEquals(150.0, cartItem.product.price, 0.0)
     }
 }
