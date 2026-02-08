@@ -321,7 +321,10 @@ fun RegistrationBody() {
                         modifier = Modifier
                             .height(50.dp)
                             .weight(1f),
-                        shape = RoundedCornerShape(15.dp)
+                        shape = RoundedCornerShape(15.dp),
+                        colors = androidx.compose.material3.CardDefaults.cardColors(
+                            containerColor = Color.White
+                        )
                     ) {
                         Row(
                             modifier = Modifier.fillMaxSize(),
@@ -342,7 +345,10 @@ fun RegistrationBody() {
                         modifier = Modifier
                             .height(50.dp)
                             .weight(1f),
-                        shape = RoundedCornerShape(15.dp)
+                        shape = RoundedCornerShape(15.dp),
+                        colors = androidx.compose.material3.CardDefaults.cardColors(
+                            containerColor = Color.White
+                        )
                     ) {
                         Row(
                             modifier = Modifier.fillMaxSize(),

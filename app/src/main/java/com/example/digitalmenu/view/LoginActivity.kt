@@ -382,7 +382,10 @@ fun LoginBody(userViewModel: UserViewModel = remember { UserViewModel(repo = Use
 fun SocialMediaCard(modifier: Modifier, image: Int, label: String) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = Color.White
+        )
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),

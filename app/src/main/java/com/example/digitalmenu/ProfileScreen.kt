@@ -26,7 +26,7 @@ import com.example.digitalmenu.R
 @Composable
 fun ProfileScreen(
     userName: String = "Rashmi Jha",
-    email: String = "rashmi@gmail.com",
+    email: String = "jharashmi3027@gmail.com",
     phone: String = "+977 9898561273",
     address: String = "Surkhet, Nepal",
 

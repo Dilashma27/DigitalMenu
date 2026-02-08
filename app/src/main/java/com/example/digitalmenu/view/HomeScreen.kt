@@ -189,7 +189,7 @@ fun HomeScreen(
                         } else {
                             "Your menu is empty!"
                         },
-                        color = Color.Gray,
+                        color = Color.Black,
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Medium
