@@ -6,38 +6,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.unit.sp
 import com.example.digitalmenu.ViewModel.UserViewModel
 import com.example.digitalmenu.repository.UserRepoImpl
-import com.example.digitalmenu.ui.theme.PurpleGrey80
-import com.example.digitalmenu.ui.theme.PurpleGrey40
-
-
 
 
 class ForgotPassword : ComponentActivity() {
@@ -46,91 +29,92 @@ class ForgotPassword : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ForgotPasswordBody()
-
-
         }
     }
 }
+
 @Composable
 fun ForgotPasswordBody() {
     val userViewModel = remember { UserViewModel(UserRepoImpl()) }
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
+
     val gradientColors = listOf(
         Color(0xFFD1B3FF),
         Color(0xFF9BB7FF)
     )
-    Scaffold() { padding ->
-        LazyColumn(
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.verticalGradient(gradientColors)),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            shape = RoundedCornerShape(25.dp),
             modifier = Modifier
-                .fillMaxSize()
-                .padding( padding)
-                .background(brush = Brush.verticalGradient(
-                    colors = gradientColors
-                )),
+                .fillMaxWidth(0.9f)
+                .padding(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
 
         ) {
-            item{
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Forgot Password",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontSize = 24.sp,
+                        color = Color.Black
+                    )
+                )
+
+                Text(
+                    text = "Enter your email address to reset your password",
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    softWrap = true
+                )
+
                 OutlinedTextField(
                     value = email,
-                    onValueChange = { data ->
-                        email = data
-
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email
-                    ),
-                    placeholder = {
-                        Text("abc@gmail.com")
-                    },
+                    onValueChange = { email = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    placeholder = { Text("abc@gmail.com") },
+                    singleLine = true,
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = PurpleGrey80,
-                        focusedContainerColor = PurpleGrey80,
-                        focusedIndicatorColor = Blue,
-                        unfocusedIndicatorColor = Color.Transparent
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White,
+                        focusedIndicatorColor = Color.Blue,
+                        unfocusedIndicatorColor = Color.Gray,
+                        cursorColor = Color.Blue
                     ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
-                    shape = RoundedCornerShape(20.dp)
-
-
+                    shape = RoundedCornerShape(15.dp),
+                    modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+
                 Button(
                     onClick = {
-                        userViewModel.forgotPassword(email){ success, message->
-                            if (success){
-                                Toast.makeText(
-                                    context,
-                                    message,
-                                    Toast.LENGTH_LONG
-                                ).show()
-
-                            }else{
-                                Toast.makeText(
-                                    context,
-                                    message,
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-
+                        userViewModel.forgotPassword(email) { success, message ->
+                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                         }
                     },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = 15.dp, vertical = 20.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Blue
-                    )
-
-
+                    shape = RoundedCornerShape(15.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
                 ) {
-                    Text("Forgot Password")
-
+                    Text(text = "Send Reset Link", color = Color.White, fontSize = 16.sp)
                 }
             }
         }
     }
 }
-

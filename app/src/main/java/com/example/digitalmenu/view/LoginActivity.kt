@@ -313,14 +313,18 @@ fun LoginBody(userViewModel: UserViewModel = remember { UserViewModel(repo = Use
                         .padding(vertical = 30.dp, horizontal = 30.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    HorizontalDivider(modifier = Modifier.weight(1f))
+                    HorizontalDivider(modifier = Modifier.weight(1f),
+                        color = Color.White.copy(alpha = 0.8f))
                     Text(
                         "Or Login with",
                         modifier = Modifier.padding(horizontal = 15.dp),
                         fontSize = 12.sp,
                         color = Color.Black
                     )
-                    HorizontalDivider(modifier = Modifier.weight(1f))
+                    HorizontalDivider(modifier = Modifier.weight(1f),
+                        color = Color.White.copy(alpha = 0.8f)
+                        )
+
                 }
             }
 
