@@ -59,7 +59,7 @@ fun SplashBody() {
         delay(3000)
         val intent = Intent(
             context,
-            LoginActivity::class.java
+            WelcomeActivity::class.java
         )
         context.startActivity(intent)
         activity.finish()
