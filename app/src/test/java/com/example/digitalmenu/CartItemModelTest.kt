@@ -8,31 +8,36 @@ import org.junit.Test
 class CartItemModelTest {
 
     @Test
-    fun cartItemQuantity_isCorrect() {
+    fun cartItemTotalPrice_isCorrect() {
         val product = ProductModel(
-            productId = "1",
-            name = "Tea",
-            description = "Hot & Sweet",
-            price = 30.0,
-            categoryId = "C1"
+            productId = "4",
+            name = "Coffee",
+            description = "Hot coffee",
+            price = 50.0,
+            categoryId = "C4"
         )
-        val cartItem = CartItemModel(product, 2)
 
-        assertEquals(2, cartItem.quantity)
+        val cartItem = CartItemModel(product, 3)
+
+        val totalPrice = cartItem.product.price * cartItem.quantity
+
+        assertEquals(150.0, totalPrice, 0.0)
     }
 
-    @Test
-    fun cartItemProduct_isCorrect() {
-        val product = ProductModel(
-            productId = "2",
-            name = "Burger",
-            description = "Fresh and Tasty",
-            price = 150.0,
-            categoryId = "C2"
-        )
-        val cartItem = CartItemModel(product, 1)
 
-        assertEquals("Burger", cartItem.product.name)
-        assertEquals(150.0, cartItem.product.price, 0.0)
+    @Test
+    fun cartItemQuantity_isWrong_expectedFail() {
+        val product = ProductModel(
+            productId = "5",
+            name = "Sandwich",
+            description = "Veg sandwich",
+            price = 80.0,
+            categoryId = "C5"
+        )
+
+        val cartItem = CartItemModel(product, 2)
+
+        // Wrong on purpose
+        assertEquals(3, cartItem.quantity)
     }
 }

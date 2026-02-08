@@ -42,6 +42,6 @@ class ProductModelTest {
             categoryId = "C3"
         )
 
-        assertEquals(300.0, product.price, 0.0)
+        assertEquals(500.0, product.price, 0.0)
     }
 }
